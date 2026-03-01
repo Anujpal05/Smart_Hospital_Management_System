@@ -7,7 +7,7 @@ const HeroSection = ()=>{
             <img src="https://res.cloudinary.com/dcfy1v0ab/image/upload/v1771845100/Screenshot_2026-02-23_164049_gatgqy.png" alt="Hero Section" className="bg-blue-900 h-fit w-full" />
             
         </div>
-        <div className=" flex justify-center p-5 relative -top-14">
+        <div className=" lg:flex justify-center p-5 relative -top-14 hidden ">
                 <div className="flex items-center gap-20">
                 <div className=" bg-blue-800 flex items-center gap-10 p-4 rounded-md text-gray-200">
                     <p className=" font-semibold">Book an Appointment</p>
