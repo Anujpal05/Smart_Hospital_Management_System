@@ -60,7 +60,7 @@ const Navbar = () => {
                     <FaSearch className=' text-gray-200 text-lg' />
                 </div>
                 <div>
-                    <button className=' bg-blue-300 text-blue-900 font-semibold px-4 py-2 rounded-full cursor-pointer'>Appointment</button>
+                    <button className=' bg-blue-300 text-blue-900 font-semibold px-4 py-2 rounded-full cursor-pointer outline-none'><Link to="/appointment">Appointment</Link></button>
                 </div>
             </div>
          </div>
@@ -81,15 +81,15 @@ const Navbar = () => {
             open && (
                 <div className=' absolute top-16 left-0 w-full bg-blue-900 text-gray-200 flex flex-col items-center gap-4 py-4 lg:hidden z-20'>
                     <ul className=' flex flex-col gap-4'>
-                    <li className=' cursor-pointer hover:text-gray-300'><Link to="/">Home</Link></li>
-                    <li className=' cursor-pointer hover:text-gray-300'><Link to="/about">About us</Link></li>
-                    <li className=' cursor-pointer hover:text-gray-300'><Link to="/services">Services</Link></li>
-                    <li className=' cursor-pointer hover:text-gray-300'><Link to="/doctors">Doctors</Link></li>
-                    <li className=' cursor-pointer hover:text-gray-300'><Link to="/news">News</Link></li>
-                    <li className=' cursor-pointer hover:text-gray-300'><Link to="/contact">Contact</Link></li>
+                    <li className=' cursor-pointer hover:text-gray-300' onClick={()=> setOPen(!open)}><Link to="/">Home</Link></li>
+                    <li className=' cursor-pointer hover:text-gray-300' onClick={()=> setOPen(!open)}><Link to="/about">About us</Link></li>
+                    <li className=' cursor-pointer hover:text-gray-300' onClick={()=> setOPen(!open)}><Link to="/services">Services</Link></li>
+                    <li className=' cursor-pointer hover:text-gray-300' onClick={()=> setOPen(!open)}><Link to="/doctors">Doctors</Link></li>
+                    <li className=' cursor-pointer hover:text-gray-300' onClick={()=> setOPen(!open)}><Link to="/news">News</Link></li>
+                    <li className=' cursor-pointer hover:text-gray-300' onClick={()=> setOPen(!open)}><Link to="/contact">Contact</Link></li>
                 </ul> 
                 <div>
-                    <button className=' bg-blue-300 text-blue-900 font-semibold px-4 py-2 rounded-full cursor-pointer'>Appointment</button>
+                    <button className=' bg-blue-300 text-blue-900 font-semibold px-4 py-2 rounded-full cursor-pointer outline-none' onClick={()=> setOPen(!open)}><Link to="/appointment">Appointment</Link></button>
                 </div>
                 </div>
             )
