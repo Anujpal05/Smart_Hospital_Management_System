@@ -68,10 +68,10 @@ const Navbar = () => {
             <div className=' lg:hidden flex justify-between items-center font-semibold px-4 py-4 text-gray-200 bg-blue-900 relative'>
                 <h1 className="text-xl font-bold text-blue-300">MED<span className=' text-white'>DICAL</span></h1>
                 <div className=' flex items-center gap-6'>
-                    <button className=" text-2xl text-white outline-none">
+                    <button className=" text-2xl text-white outline-none cursor-pointer">
                     <FaSearch />
                 </button>
-                <button className=" text-4xl text-white  outline-none" onClick={() => setOPen(!open)}>
+                <button className=" text-4xl text-white  outline-none cursor-pointer" onClick={() => setOPen(!open)}>
                     {open ? <RxCross1/> : <IoReorderThreeOutline/>}
                 </button>
                 </div>
@@ -79,14 +79,14 @@ const Navbar = () => {
 
         {
             open && (
-                <div className=' absolute top-16 left-0 w-full bg-blue-900 text-gray-200 flex flex-col items-center gap-4 py-4 lg:hidden'>
+                <div className=' absolute top-16 left-0 w-full bg-blue-900 text-gray-200 flex flex-col items-center gap-4 py-4 lg:hidden z-20'>
                     <ul className=' flex flex-col gap-4'>
-                    <li className=' cursor-pointer hover:text-gray-300'>Home</li>
-                    <li className=' cursor-pointer hover:text-gray-300'>About us</li>
-                    <li className=' cursor-pointer hover:text-gray-300'>Services</li>
-                    <li className=' cursor-pointer hover:text-gray-300'>Doctors</li>
-                    <li className=' cursor-pointer hover:text-gray-300'>News</li>
-                    <li className=' cursor-pointer hover:text-gray-300'>Contact</li>
+                    <li className=' cursor-pointer hover:text-gray-300'><Link to="/">Home</Link></li>
+                    <li className=' cursor-pointer hover:text-gray-300'><Link to="/about">About us</Link></li>
+                    <li className=' cursor-pointer hover:text-gray-300'><Link to="/services">Services</Link></li>
+                    <li className=' cursor-pointer hover:text-gray-300'><Link to="/doctors">Doctors</Link></li>
+                    <li className=' cursor-pointer hover:text-gray-300'><Link to="/news">News</Link></li>
+                    <li className=' cursor-pointer hover:text-gray-300'><Link to="/contact">Contact</Link></li>
                 </ul> 
                 <div>
                     <button className=' bg-blue-300 text-blue-900 font-semibold px-4 py-2 rounded-full cursor-pointer'>Appointment</button>

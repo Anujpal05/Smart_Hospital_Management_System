@@ -6,7 +6,6 @@ import Contact_Section from "../Components/Home/Contact_Section";
 const About = () => {
   return (
     <div className="w-full">
-
       {/* ===== Hero Section ===== */}
       <div className="relative w-full h-[300px]">
         <img
@@ -14,18 +13,15 @@ const About = () => {
           alt="Doctors"
           className="w-full h-full object-cover"
         />
-        <div className="absolute inset-0 text-[#1F2B6C] bg-gray-200/60 flex flex-col justify-center px-20">
+        <div className="absolute inset-0 text-[#1F2B6C] bg-gray-200/60 flex flex-col justify-center px-6 lg:px-20">
           <p className=" text-sm">Home / About</p>
-          <h1 className=" text-4xl font-bold mt-2">
-            About us
-          </h1>
+          <h1 className=" text-4xl font-bold mt-2">About us</h1>
         </div>
       </div>
 
       {/* ===== About Content Section ===== */}
-      <div className=" py-16 px-6 md:px-20 w-[80%] mx-auto">
-        <div className="grid md:grid-cols-2 items-center">
-
+      <div className=" py-16 px-6 md:px-20 lg:w-[80%] mx-auto">
+        <div className="grid md:grid-cols-2 gap-10 items-center">
           {/* Left Image */}
           <div>
             <img
@@ -63,16 +59,18 @@ const About = () => {
             </div>
 
             <p className="text-gray-600 mt-6 leading-relaxed">
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-              Quisque placerat scelerisque tortor ornare ornare.
-              Quisque placerat scelerisque tortor ornare ornare.
-              Velit nascetur proin massa in.
+              At our hospital, we are dedicated to providing high-quality
+              healthcare services with compassion and integrity. Our experienced
+              medical team combines advanced technology with personalized
+              treatment plans to ensure accurate diagnosis, effective care, and
+              faster recovery for every patient.
             </p>
 
             <p className="text-gray-600 mt-4 leading-relaxed">
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-              Quisque placerat scelerisque tortor ornare ornare.
-              Velit nascetur proin massa in.
+              We believe that true healthcare goes beyond treatment — it is
+              about building trust, offering comfort, and supporting our
+              patients at every stage of their health journey. Your well-being
+              is our highest priority.
             </p>
           </div>
         </div>
@@ -92,13 +90,14 @@ const About = () => {
           <div className="text-5xl font-bold mb-6">“</div>
 
           <p className="text-lg leading-relaxed">
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-            Quisque placerat scelerisque tortor ornare ornare.
-            Quisque placerat scelerisque tortor ornare ornare.
-            Velit nascetur consequat porttitor enim et.
+            The care and attention I received here truly exceeded my
+            expectations. The doctors took the time to listen, explain every
+            step of the treatment, and made me feel comfortable throughout my
+            recovery. I am grateful for their professionalism, kindness, and
+            dedication to patient well-being.
           </p>
 
-          <div className="mt-6 font-semibold text-lg">John Doe</div>
+          <div className="mt-6 font-semibold text-lg">Rahul Mehta</div>
 
           {/* Dots */}
           <div className="flex justify-center gap-3 mt-6">
@@ -108,9 +107,9 @@ const About = () => {
           </div>
         </div>
       </div>
-        <Doctors_Section/>
-        <News_Section/>
-        <Contact_Section/>
+      <Doctors_Section />
+      <News_Section />
+      <Contact_Section />
     </div>
   );
 };
