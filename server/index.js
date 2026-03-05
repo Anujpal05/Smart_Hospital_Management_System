@@ -40,17 +40,15 @@ app.get("/", (req, res) => {
 const PORT = process.env.PORT || 5000;
 
 // Connect DB and Start Server
-      console.log(`🚀 Server running on http://localhost:${PORT}.....`);
 mongoose
-  .connect("mongodb+srv://anujpal:Hanuman12@cluster0.9odhyfh.mongodb.net/")
+  .connect(process.env.MONGO_URI)
   .then(() => {
     console.log("✅ MongoDB Connected");
   })
   .catch((err) => {
-    console.log(process.env.MONGO_URI)
     console.error("❌ DB connection error:", err);
   });
 
-  app.listen(PORT, () => {
-      console.log(`🚀 Server running on http://localhost:${PORT}`);
-  });
+app.listen(PORT, () => {
+  console.log(`🚀 Server running on http://localhost:${PORT}`);
+});
