@@ -1,0 +1,122 @@
+export const patients = [
+  {
+    id: "0220092020001",
+    name: "Sanath Deo",
+    checkup: "Health Checkup",
+    appointment: "09:30 AM",
+    status: "On Going",
+    dob: "15 January 1989",
+    sex: "Male",
+    weight: "59 Kg",
+    height: "172 cm",
+    history: ["Asthma", "Hypertension", "Fever"]
+  },
+  {
+    id: "0220092020002",
+    name: "Alexa Smith",
+    checkup: "Dental Checkup",
+    appointment: "10:00 AM",
+    status: "Completed",
+    dob: "22 March 1992",
+    sex: "Female",
+    weight: "54 Kg",
+    height: "165 cm",
+    history: ["Tooth Pain", "Cavity"]
+  },
+  {
+    id: "0220092020003",
+    name: "Michael Brown",
+    checkup: "Cardiology",
+    appointment: "10:30 AM",
+    status: "Completed",
+    dob: "03 August 1985",
+    sex: "Male",
+    weight: "72 Kg",
+    height: "178 cm",
+    history: ["Hypertension", "Chest Pain"]
+  },
+  {
+    id: "0220092020004",
+    name: "Sophia Lee",
+    checkup: "Eye Checkup",
+    appointment: "11:00 AM",
+    status: "Completed",
+    dob: "10 December 1995",
+    sex: "Female",
+    weight: "50 Kg",
+    height: "160 cm",
+    history: ["Blur Vision", "Headache"]
+  },
+  {
+    id: "0220092020005",
+    name: "Daniel Wilson",
+    checkup: "General Checkup",
+    appointment: "12:00 PM",
+    status: "Completed",
+    dob: "28 February 1988",
+    sex: "Male",
+    weight: "68 Kg",
+    height: "174 cm",
+    history: ["Fever", "Cold"]
+  },
+  {
+    id: "0220092020006",
+    name: "Emma Johnson",
+    checkup: "Dermatology",
+    appointment: "12:30 PM",
+    status: "Upcoming",
+    dob: "11 July 1993",
+    sex: "Female",
+    weight: "56 Kg",
+    height: "167 cm",
+    history: ["Skin Allergy"]
+  },
+  {
+    id: "0220092020007",
+    name: "James Anderson",
+    checkup: "Orthopedic",
+    appointment: "01:00 PM",
+    status: "Upcoming",
+    dob: "19 September 1981",
+    sex: "Male",
+    weight: "80 Kg",
+    height: "180 cm",
+    history: ["Knee Pain", "Back Pain"]
+  },
+  {
+    id: "0220092020008",
+    name: "Olivia Martin",
+    checkup: "ENT Checkup",
+    appointment: "01:30 PM",
+    status: "Upcoming",
+    dob: "05 May 1997",
+    sex: "Female",
+    weight: "52 Kg",
+    height: "162 cm",
+    history: ["Ear Pain", "Cold"]
+  },
+  {
+    id: "0220092020009",
+    name: "William Clark",
+    checkup: "Cardiology",
+    appointment: "03:00 PM",
+    status: "Upcoming",
+    dob: "14 April 1979",
+    sex: "Male",
+    weight: "75 Kg",
+    height: "176 cm",
+    history: ["Hypertension", "Heart Disease"]
+  },
+  {
+    id: "0220092020010",
+    name: "Isabella Garcia",
+    checkup: "Gynecology",
+    appointment: "04:00 PM",
+    status: "Upcoming",
+    dob: "30 January 1994",
+    sex: "Female",
+    weight: "58 Kg",
+    height: "168 cm",
+    history: ["Hormonal Issue"]
+  }
+];
