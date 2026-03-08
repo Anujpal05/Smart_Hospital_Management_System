@@ -8,12 +8,9 @@ const userSchema = new mongoose.Schema(
     role: {
       type: String,
       enum: ["PATIENT", "DOCTOR", "ADMIN"],
+      default: "PATIENT",
       required: true,
     },
-    phone: String,
-    gender: String,
-    dob: Date,
-    specialization: String, // Only for doctors
     isActive: { type: Boolean, default: true }
   },
   { timestamps: true }
