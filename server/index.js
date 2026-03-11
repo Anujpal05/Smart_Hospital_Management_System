@@ -11,6 +11,8 @@ import appointmentRoutes from "./src/routes/appointment.routes.js";
 import admissionRoutes from "./src/routes/admission.routes.js";
 import billingRoutes from "./src/routes/billing.routes.js";
 import paymentRoutes from "./src/routes/payment.routes.js";
+import doctorRoutes from "./src/routes/doctor.route.js";
+import patientRoutes from "./src/routes/patient.route.js";
 
 // Load env
 dotenv.config();
@@ -23,7 +25,9 @@ app.use(morgan("dev"));
 
 // Routes
 app.use("/api/auth", authRoutes);
-app.use("/api/users", userRoutes);
+app.use("/api/user", userRoutes);
+app.use("/api/doctor" , doctorRoutes)
+app.use("/api/patient", patientRoutes)
 app.use("/api/wards", wardRoutes);
 app.use("/api/beds", bedRoutes);
 app.use("/api/appointments", appointmentRoutes);

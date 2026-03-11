@@ -6,30 +6,31 @@ import {
   updateUser,
   updatePassword,
   deactivateUser,
-  activateUser
+  activateUser,
 } from "../controllers/user.controller.js";
+import { authenticateToken } from "../config/auth.js";
 
 const router = express.Router();
 
 // Admin only
-router.get("/", getAllUsers);
+router.get("/get-all-users", authenticateToken, getAllUsers);
 
 // Get by role
-router.get("/role/:role", getUsersByRole);
+router.get("/role", authenticateToken, getUsersByRole);
 
 // Get single user
-router.get("/:id", getUserById);
+router.get("/get-user/:id", authenticateToken, getUserById);
 
 // Update profile
-router.put("/:id", updateUser);
+router.put("/update-user/:id", authenticateToken, updateUser);
 
 // Update password
-router.put("/password/:id", updatePassword);
+router.put("/update-password/:id", authenticateToken, updatePassword);
 
 // Soft delete
-router.put("/deactivate/:id", deactivateUser);
+router.put("/deactivate/:id", authenticateToken, deactivateUser);
 
 // Reactivate
-router.put("/activate/:id", activateUser);
+router.put("/activate/:id", authenticateToken, activateUser);
 
 export default router;

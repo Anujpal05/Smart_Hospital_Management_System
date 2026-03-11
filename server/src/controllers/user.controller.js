@@ -1,14 +1,17 @@
 import User from "../models/user.model.js";
 import bcrypt from "bcryptjs";
 
-
 // Get All Users (Admin)
 export const getAllUsers = async (req, res) => {
   try {
+    const role = req.user.role;
+    if (role == "PATIENT") {
+      return res.status(403).json({ message: "Access denied!" });
+    }
+
     const users = await User.find().select("-password");
 
-    if (!users)
-      return res.status(404).json({ message: "No users found!" });
+    if (!users) return res.status(404).json({ message: "No users found!" });
 
     res.status(200).json(users);
   } catch (error) {
@@ -16,18 +19,24 @@ export const getAllUsers = async (req, res) => {
   }
 };
 
-
 // Get Single User by ID
 export const getUserById = async (req, res) => {
   try {
-    if(!req.params.id){
+    const role = req.user.role;
+    const id = req.user.id;
+    const userId = req.params?.id;
+
+    if (role == "PATIENT" && id != userId) {
+      return res.status(403).json({ message: "Access denied!" });
+    }
+
+    if (!userId) {
       return res.status(400).json({ message: "User ID is required!" });
     }
 
-    const user = await User.findById(req.params.id).select("-password");
+    const user = await User.findById(userId).select("-password");
 
-    if (!user)
-      return res.status(404).json({ message: "User not found!" });
+    if (!user) return res.status(404).json({ message: "User not found!" });
 
     res.status(200).json(user);
   } catch (error) {
@@ -35,12 +44,14 @@ export const getUserById = async (req, res) => {
   }
 };
 
-
 // Get Users By Role (Doctor / Patient / Admin)
 export const getUsersByRole = async (req, res) => {
   try {
-    const { role } = req.params;
-
+    const { role } = req.body;
+    const userRole = req.user.role;
+    if (userRole == "PATIENT") {
+      return res.status(403).json({ message: "Access denied!" });
+    }
     const users = await User.find({ role }).select("-password");
     res.status(200).json(users);
   } catch (error) {
@@ -48,15 +59,23 @@ export const getUsersByRole = async (req, res) => {
   }
 };
 
-
 // Update User Profile
 export const updateUser = async (req, res) => {
   try {
-    const updatedUser = await User.findByIdAndUpdate(
-      req.params.id,
-      req.body,
-      { new: true }
-    ).select("-password");
+    const id = req.user.id;
+    const userId = req.params?.id;
+    if (id != userId) {
+      return res.status(403).json({ message: "Access denied!" });
+    }
+
+    let payload = {};
+    if (req.body.name) payload.name = req.body.name;
+    if (req.body.email) payload.email = req.body.email;
+
+    const updatedUser = await User.findByIdAndUpdate(userId, payload, {
+      new: true,
+      runValidators: true,
+    }).select("-password");
 
     if (!updatedUser)
       return res.status(404).json({ message: "User not found!" });
@@ -67,16 +86,29 @@ export const updateUser = async (req, res) => {
   }
 };
 
-
 // Update Password
 export const updatePassword = async (req, res) => {
   try {
     const { oldPassword, newPassword } = req.body;
+    const id = req.user.id;
+    const userId = req.params?.id;
 
-    const user = await User.findById(req.params.id);
+    if (id != userId) {
+      return res.status(403).json({ message: "Access denied!" });
+    }
+    if (!oldPassword || !newPassword) {
+      return res.status(400).json({ message: "All fields are required!" });
+    }
 
-    if (!user)
-      return res.status(404).json({ message: "User not found!" });
+    if (newPassword.length < 5) {
+      return res
+        .status(400)
+        .json({ message: "Password must be at least 5 characters long!" });
+    }
+
+    const user = await User.findById(userId);
+
+    if (!user) return res.status(404).json({ message: "User not found!" });
 
     const isMatch = await bcrypt.compare(oldPassword, user.password);
     if (!isMatch)
@@ -87,12 +119,10 @@ export const updatePassword = async (req, res) => {
     await user.save();
 
     res.status(200).json({ message: "Password updated successfully!" });
-
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
 };
-
 
 // Soft Delete User (Deactivate Account)
 export const deactivateUser = async (req, res) => {
@@ -100,11 +130,10 @@ export const deactivateUser = async (req, res) => {
     const user = await User.findByIdAndUpdate(
       req.params.id,
       { isActive: false },
-      { new: true }
+      { new: true },
     ).select("-password!");
 
-    if (!user)
-      return res.status(404).json({ message: "User not found" });
+    if (!user) return res.status(404).json({ message: "User not found" });
 
     res.status(200).json({ message: "User deactivated", user });
   } catch (error) {
@@ -112,18 +141,16 @@ export const deactivateUser = async (req, res) => {
   }
 };
 
-
 // Reactivate User (Admin Only)
 export const activateUser = async (req, res) => {
   try {
     const user = await User.findByIdAndUpdate(
       req.params.id,
       { isActive: true },
-      { new: true }
+      { new: true },
     ).select("-password!");
 
-    if (!user)
-      return res.status(404).json({ message: "User not found" });
+    if (!user) return res.status(404).json({ message: "User not found" });
 
     res.status(200).json({ message: "User activated", user });
   } catch (error) {
