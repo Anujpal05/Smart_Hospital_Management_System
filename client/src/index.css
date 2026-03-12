@@ -1,1 +1,11 @@
 @import "tailwindcss";
+
+@theme {
+  /* This maps your CSS variables to Tailwind utility names */
+  --color-ms-blue: #3B82F6;
+  --color-ms-green: #10B981;
+  --color-ms-yellow: #F59E0B;
+  --color-ms-purple: #8B5CF6;
+  --color-ms-bg: #F8FAFC;
+  
+}

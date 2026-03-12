@@ -25,6 +25,7 @@ import Calendar from '../Common/Calendar';
 import { Link } from 'react-router-dom';
 import { patients } from '../../../Data/patientdata';
 import Scheduler from './BigCalender';
+import QuickActions from './QuickActions';
 const chartData = [
   { name: "New Patients", value: 35 },
   { name: "Old Patients", value: 30 },
@@ -169,13 +170,14 @@ const DashBoardMain = () => {
 							<div className="flex gap-3 mt-6">
 
 								{/* Video Call */}
-								<button
+								<Link
+								    to={"/video-call/123456"}
 									data-tooltip-id="videoTip"
 									data-tooltip-content="Video Call"
 									className="bg-blue-600 cursor-pointer text-white p-3 rounded-lg hover:bg-blue-700"
 								>
 									<FaVideo />
-								</button>
+								</Link>
 								<Tooltip id="videoTip" place="bottom" />
 
 
@@ -229,7 +231,8 @@ const DashBoardMain = () => {
 						</div>
 
 						{/* Calendar */}
-					   <Calendar />
+					   {/* <Calendar /> */}
+					   <QuickActions />
 
 					</div>
 					<Scheduler />

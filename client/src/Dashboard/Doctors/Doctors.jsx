@@ -11,6 +11,7 @@ import {
   FaPhoneAlt,
   FaFileMedical,
   FaCommentDots,
+  FaFileInvoice
 } from "react-icons/fa";
 import {
   PieChart,
@@ -26,12 +27,14 @@ import AppointmentSection from "../../Components/DashBoard/Doctors/AppointmentSe
 import DashBoardMain from "../../Components/DashBoard/Doctors/DashBoardMain";
 import Payment from "../../Components/DashBoard/Doctors/Payment";
 import Profile from "../../Components/DashBoard/Common/Profile";
+import LabReports from "../../Components/DashBoard/Doctors/LabReports";
 
 /* ================== DATA ================== */
 const sidebarpanner = {
-	dashboardmain : "DashboardMain",
+	dashboardmain : "Dashboard",
 	appointment : "Appointment",
 	appointmentPage : "AppointmentPage",
+  labReports : "Lab Reports",
 	payment : "Payment",
 	profile : "Profile"
 }
@@ -39,14 +42,14 @@ const sidebarpanner = {
 /* ================== MAIN ================== */
 
 export default function Dashboard() {
-	const [sidebarlink , setIssidebarLink] = useState(sidebarpanner.dashboardmain);
+	const [sidebarlink , setIssidebarLink] = useState(sidebarpanner.labReports);
 	// const [isTodayAppointmentpageopen , setIsTodayAppointmentpageopen] = useState(false);
   return (
     <div className="min-h-screen bg-[#eef2ff] p-6 font-sans">
       <div className="bg-white rounded-3xl shadow-2xl flex overflow-hidden">
 
         {/* ================= SIDEBAR ================= */}
-        <div className="w-64 bg-white border-r p-6">
+        <div className="w-64 bg-white p-6">
           <div className="flex flex-col items-center">
             <div className="w-24 h-24 bg-blue-600 rounded-full flex items-center justify-center text-white text-3xl font-bold">
               DM
@@ -63,6 +66,7 @@ export default function Dashboard() {
             <MenuItem onClick={()=>setIssidebarLink(sidebarpanner.dashboardmain)} icon={<FaUsers />} label="Dashboard" active={sidebarpanner.dashboardmain == sidebarlink} />
             <MenuItem onClick={()=>setIssidebarLink(sidebarpanner.appointment)} icon={<FaCalendarAlt />} label="Appointment"  active={sidebarpanner.appointment == sidebarlink} />
             <MenuItem onClick={()=>setIssidebarLink(sidebarpanner.appointmentPage)} icon={<FaFileMedical />}  active={sidebarpanner.appointmentPage == sidebarlink} label="Appointment Page" />
+            <MenuItem onClick={()=>setIssidebarLink(sidebarpanner.labReports)} icon={<FaFileInvoice />}  active={sidebarpanner.labReports == sidebarlink} label={sidebarpanner.labReports} />
             <MenuItem onClick={()=>setIssidebarLink(sidebarpanner.payment)} icon={<FaClock />}  active={sidebarpanner.payment == sidebarlink} label="Payment" />
             <MenuItem onClick={()=>setIssidebarLink(sidebarpanner.profile)} icon={<FaUserMd />}  active={sidebarpanner.profile == sidebarlink} label="Profile" />
             <MenuItem icon={<FaCog />} label="Settings" />
@@ -72,11 +76,12 @@ export default function Dashboard() {
 			
 			<>
 			   {/* ================= MAIN ================= */}
-					<div className="flex-1 bg-[#f8f9fd] p-8">
+					<div className="flex-1 bg-gray-50 p-8">
 
 					{/* Header */}
-					<h1 className="text-2xl font-semibold text-gray-800">Dashboard</h1>
+          <h1 className="text-2xl mb-6 font-semibold text-gray-800">{sidebarlink}</h1> 
 					{sidebarlink == sidebarpanner.dashboardmain && <DashBoardMain /> }
+					{sidebarlink == sidebarpanner.labReports && <LabReports /> }
 					{sidebarlink == sidebarpanner.appointment && <AppointmentSection /> }
 					{sidebarlink == sidebarpanner.appointmentPage && <AppointmentPage /> }
 					{sidebarlink == sidebarpanner.payment && <Payment /> }

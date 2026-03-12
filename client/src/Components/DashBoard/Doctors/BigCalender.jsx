@@ -12,7 +12,7 @@ const now = new Date();
 
 export default function Scheduler() {
   return (
-    <div className="bg-white rounded-2xl shadow-md p-6">
+    <div className="bg-white rounded-2xl mt-6 shadow-md p-6">
       <h2 className="text-xl font-semibold mb-4">
         Doctor Appointment Scheduler
       </h2>

@@ -68,7 +68,7 @@ const AppointmentPage = () => {
 
       {/* ===== Header ===== */}
       <div className="flex justify-between items-center mb-6">
-        <h1 className="text-2xl font-semibold">Appointments</h1>
+        {/* <h1 className="text-2xl font-semibold">Appointments</h1> */}
 
         <div className="flex items-center bg-white px-4 py-2 rounded-xl shadow-sm">
           <FaSearch className="text-gray-400 mr-2" />
