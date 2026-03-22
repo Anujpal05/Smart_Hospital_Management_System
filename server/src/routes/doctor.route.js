@@ -1,11 +1,17 @@
 import express from "express";
-import { addDoctor, getDoctorById, getDoctors, updateDoctor } from "../controllers/doctors.controller.js";
+import {
+  addDoctor,
+  getDoctorById,
+  getDoctors,
+  updateDoctor,
+} from "../controllers/doctors.controller.js";
 import { authenticateToken } from "../config/auth.js";
+import upload from "../config/multer.js";
 const router = express.Router();
 
-router.post("/add-doctor" , authenticateToken, addDoctor);
-router.get("/get-doctors" ,authenticateToken, getDoctors);
-router.get("/get-doctor/:id" ,authenticateToken ,  getDoctorById);
-router.put("/update-doctor/:id" ,authenticateToken, updateDoctor);
+router.post("/", authenticateToken, upload.single("profile"), addDoctor);
+router.get("/", authenticateToken, getDoctors);
+router.get("/:id", authenticateToken, getDoctorById);
+router.put("/:id", authenticateToken, upload.single("profile"), updateDoctor);
 
 export default router;

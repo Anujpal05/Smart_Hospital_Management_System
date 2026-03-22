@@ -1,11 +1,14 @@
 import User from "../models/user.model.js";
 import Patient from "../models/patient.model.js";
+import cloudinary from "../config/cloudinary.js";
 
 const addPatient = async (req, res) => {
   try {
     const role = req.user?.role;
     const { userId } = req.body;
-    if (role === "PATIENT") {
+    const file = req.file;
+
+    if (role != "DOCTOR" && role != "ADMIN") {
       return res.status(403).json({ message: "Access denied!" });
     }
 
@@ -22,6 +25,18 @@ const addPatient = async (req, res) => {
     if (existingPatient) {
       return res.status(400).json({ message: "Patient already exist" });
     }
+
+    if(file){
+      const base64 = file.buffer.toString("base64");
+      const result = await cloudinary.uploader.upload(`data:${file.mimetype};base64,${base64}` , {
+        folder: "meddical-app"
+      })
+      const patientPhoto = {
+        url : result.secure_url,
+        publicId: result.public_id
+      }
+    }
+
     const patient = await Patient.create(req.body);
     res.json({ message: "Patient added successfully!" });
   } catch (error) {
@@ -34,7 +49,7 @@ const addPatient = async (req, res) => {
 const getPatients = async (req, res) => {
   try {
     const role = req.user?.role;
-    if (role === "PATIENT") {
+    if (role != "DOCTOR" && role != "ADMIN") {
       return res.status(403).json({ message: "Access denied!" });
     }
 
@@ -49,23 +64,27 @@ const getPatients = async (req, res) => {
 
 const getPatientById = async (req, res) => {
   try {
-    const userId = req.params?.id;
+    const patientId = req.params?.id;
     const role = req.user?.role;
     const id = req.user?.id;
-    console.log(id);
 
-    if (role === "PATIENT" && userId !== id) {
-      return res.status(403).json({ message: "Access denied!" });
-    }
-
-    if (!userId) {
+    if (!patientId) {
       return res.status(400).json({ message: "User ID is required!" });
     }
 
-    const patient = await Patient.find({ userId }).populate(
+    const patient = await Patient.findById(patientId).populate(
       "userId",
       "-password",
     );
+
+    if (role === "PATIENT" && patient.userId?._id != id) {
+      return res.status(403).json({ message: "Access denied!" });
+    }
+
+    if (!patient) {
+      return res.status(404).json({ message: "Patient not found!" });
+    }
+
     res.json(patient);
   } catch (error) {
     res
@@ -78,13 +97,32 @@ const updatePatient = async (req, res) => {
   try {
     const role = req.user.role;
     const id = req.user.id;
-    const userId = req.params?.id;
+    const patientId = req.params?.id;
+    const file = req.file;
 
-    if (role === "PATIENT" && userId != id) {
+    const patient = await Patient.findById(patientId).populate("userId");
+    if (role === "PATIENT" && patient.userId != id) {
       return res.status(403).json({ message: "Access denied!" });
     }
+    
+    if(!patient){
+      return res.status(404).json({ message: "Patient not found!" });
+    }
 
-    const patient = await Patient.findOne({ userId });
+    if(file){
+      if(patient.profilePhoto.publicId){
+        await cloudinary.uploader.destroy(patient.profilePhoto.publicId)
+      }
+
+      const base64 = file.buffer.toString("base64");
+      const result = await cloudinary.uploader.upload(`data:${file.mimetype};base64,${base64}` , {
+        folder: "meddical-app"
+      })
+
+      patient.profilePhoto.url = result.secure_url;
+      patient.profilePhoto.publicId = result.public_id;
+    }
+
     patient.set(req.body);
     await patient.save();
 
@@ -114,8 +152,8 @@ const deletePatient = async (req, res) => {
 const totalPatients = async (req, res) => {
   try {
     const role = req.user?.role;
-    console.log(role);
-    if (role === "PATIENT") {
+
+    if (role != "ADMIN" && role != "DOCTOR") {
       return res.status(403).json({ message: "Access denied!" });
     }
 
@@ -127,6 +165,23 @@ const totalPatients = async (req, res) => {
       .json({ message: error.message || "Internal Server Error!" });
   }
 };
+
+const getPatientsByDoctor = async (req, res) => {
+  try {
+    const doctor_id = req.params?.id;
+    const role = req.user?.role;
+
+    if(role != "ADMIN" && role != "DOCTOR"){
+      return res.status(403).json({ message: "Access denied!" });
+    }
+
+    const patients = await Patient.find({ doctor: doctor_id });
+    res.json(patients);
+  } catch (error) {
+    return res.status(500).json({ message: error.message || "Internal Server Error!" });
+  }
+};
+
 
 const getMedicalReports = async (req, res) => {
   try {
@@ -154,6 +209,7 @@ export {
   updatePatient,
   deletePatient,
   addPatient,
+  getPatientsByDoctor,
   totalPatients,
   getMedicalReports,
 };

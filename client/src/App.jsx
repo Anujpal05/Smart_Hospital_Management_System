@@ -38,8 +38,8 @@ const App = () => {
     return (
         <BrowserRouter>
         <ScrollToTop/>
-            {/* <Navbar />   */}
-            <DashboardNavbar /> 
+            <Navbar />  
+            {/* <DashboardNavbar />  */}
             { /*  this navbar appears after logged in*/}
             <Routes>
                 <Route path="/" element={<Home />} />

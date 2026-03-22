@@ -13,6 +13,9 @@ import billingRoutes from "./src/routes/billing.routes.js";
 import paymentRoutes from "./src/routes/payment.routes.js";
 import doctorRoutes from "./src/routes/doctor.route.js";
 import patientRoutes from "./src/routes/patient.route.js";
+import reportRoutes from "./src/routes/report.routes.js";
+import counterRoutes from "./src/routes/counter.routes.js";
+import multer from "multer";
 
 // Load env
 dotenv.config();
@@ -34,6 +37,17 @@ app.use("/api/appointments", appointmentRoutes);
 app.use("/api/admissions", admissionRoutes);
 app.use("/api/bills", billingRoutes);
 app.use("/api/payments", paymentRoutes);
+app.use("/api/reports", reportRoutes);
+app.use("/api/counters" , counterRoutes)
+
+// Error handling middleware
+app.use((err , req , res , next) => {
+  if(err instanceof multer.MulterError){
+    return res.status(400).json({ message: err.message });
+  }
+
+  next(err);
+})
 
 // Test route
 app.get("/", (req, res) => {
@@ -42,7 +56,6 @@ app.get("/", (req, res) => {
 });
 
 const PORT = process.env.PORT || 5000;
-
 // Connect DB and Start Server
 mongoose
   .connect(process.env.MONGO_URI)

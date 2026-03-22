@@ -1,14 +1,12 @@
 import User from "../models/user.model.js";
 import bcrypt from "bcryptjs";
-import jwt from "jsonwebtoken";
-import validateEmail from "../config/emailFormat.js";
 import { generateJWToken } from "../config/auth.js";
 
 // Register
 export const registerUser = async (req, res) => {
   try {
 
-    const { name, email, password, role } = req.body;
+    const { name, email, password } = req.body;
 
     if (!name || !email || !password) {
       return res.status(400).json({ message: "All fields are required" });
@@ -18,16 +16,8 @@ export const registerUser = async (req, res) => {
       return res.status(400).json({ message: "Name must be at least 3 characters long" });
     }
 
-    if(!validateEmail(email)) {
-      return res.status(400).json({ message: "Invalid email" });
-    }
-
     if(password.length < 6) {
       return res.status(400).json({ message: "Password must be at least 6 characters long" });
-    }
-
-    if(role == "ADMIN") {
-      return res.status(403).json({ message: "Admin role is not allowed during registration" });
     }
 
     const existing = await User.findOne({ email });
@@ -39,7 +29,6 @@ export const registerUser = async (req, res) => {
       name,
       email,
       password: hashedPassword,
-      role
     });
 
     res.status(201).json({ message: "User registered successfully", user });
@@ -58,10 +47,8 @@ export const loginUser = async (req, res) => {
 
     const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch) return res.status(400).json({ message: "Invalid credentials" });
-        console.log("token");
 
     const token = await generateJWToken({ id: user._id, role: user.role });
-    console.log(token);
     res.json({ message: "Login successful!", token });
   } catch (error) {
     res.status(500).json({ message: error.message });

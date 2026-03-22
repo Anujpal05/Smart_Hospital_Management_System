@@ -11,11 +11,10 @@ const bedSchema = new mongoose.Schema(
     },
     assignedPatient: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "User",
+      ref: "Patient",
     },
   },
-  { timestamps: true }
+  { timestamps: true },
 );
 
 export default mongoose.model("Bed", bedSchema);
-    

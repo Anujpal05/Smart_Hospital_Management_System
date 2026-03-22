@@ -1,13 +1,15 @@
 import express from "express";
 import {
   createBill,
-  getBills
+  getBillById,
+  getBills,
 } from "../controllers/billing.controller.js";
-
+import { authenticateToken } from "../config/auth.js";
 
 const router = express.Router();
 
-router.post("/",  createBill);
-router.get("/", getBills);
+router.post("/", authenticateToken, createBill);
+router.get("/", authenticateToken, getBills);
+router.get("/:id", authenticateToken, getBillById);
 
 export default router;

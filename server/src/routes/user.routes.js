@@ -7,30 +7,37 @@ import {
   updatePassword,
   deactivateUser,
   activateUser,
+  verifyMail,
+  sendVerificationLink,
 } from "../controllers/user.controller.js";
 import { authenticateToken } from "../config/auth.js";
 
 const router = express.Router();
 
 // Admin only
-router.get("/get-all-users", authenticateToken, getAllUsers);
+router.get("/", authenticateToken, getAllUsers);
 
 // Get by role
 router.get("/role", authenticateToken, getUsersByRole);
 
-// Get single user
-router.get("/get-user/:id", authenticateToken, getUserById);
-
-// Update profile
-router.put("/update-user/:id", authenticateToken, updateUser);
-
 // Update password
-router.put("/update-password/:id", authenticateToken, updatePassword);
-
+router.put("/password/:id", authenticateToken, updatePassword);
 // Soft delete
 router.put("/deactivate/:id", authenticateToken, deactivateUser);
 
 // Reactivate
 router.put("/activate/:id", authenticateToken, activateUser);
+
+// Send verification link
+router.post("/send-verification/:id" ,authenticateToken, sendVerificationLink)
+
+//verify Email by link
+router.get("/verify" , verifyMail)
+
+// Update profile
+router.put("/:id", authenticateToken, updateUser);
+
+// Get single user
+router.get("/:id", authenticateToken, getUserById);
 
 export default router;
