@@ -13,9 +13,14 @@ import {
   FaFacebookMessenger
 } from "react-icons/fa";
 import { BrainCircuit } from "lucide-react";
+import { CiLogout } from "react-icons/ci";
+import { logout } from "../../store/authSlice";
+import { useDispatch } from "react-redux";
 
 
 const PatientDashboardLayout = () => {
+  const dispatch = useDispatch();
+
    return (
     <div className="min-h-screen  bg-white font-sans">
 
@@ -35,8 +40,7 @@ const PatientDashboardLayout = () => {
             <MenuItem icon={<FaUserMd />} label="Profile" to="/patient/profile" />
 
             {/* <MenuItem icon={<FaCog />} label="Settings" to="/doctor/settings" /> */}
-            <MenuItem icon={<FaSignOutAlt />} label="Logout" to="/logout" />
-
+            <MenuItem icon={<CiLogout />} label="Logout" to="/" onClick={() => dispatch(logout())}/>
           </nav>
 
         </div>

@@ -4,7 +4,6 @@ import Navbar from './Components/Home/Navbar';
 import About from './Pages/About';
 import Footer from './Components/Home/Footer';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
-import AuthPage from './Components/Auth/AuthPage';
 import Dashboard from './Dashboard/Doctors/Doctors';
 import Videocall from './Components/DashBoard/Doctors/Videocall';
 import Services from "./Pages/Services";
@@ -33,19 +32,29 @@ import AiAssistnate from './Dashboard/patient/AiAssistnate';
 import Madications from './Components/DashBoard/Patient/Madications';
 import AppointmentPatient from './Components/DashBoard/Patient/AppointmentPatient';
 import MedicalRecords from './Components/DashBoard/Patient/MedicalRecords';
+  import { ToastContainer } from 'react-toastify';
+import RegisterPage from './Components/Auth/RegisterPage';
+import LoginPage from './Components/Auth/LoginPage';
+import { useSelector } from 'react-redux';
+
 
 const App = () => {
+    const isLogin = useSelector((state) => state.auth.isLogin);
+    console.log(isLogin);
     return (
         <BrowserRouter>
         <ScrollToTop/>
-            <Navbar />  
+            <Navbar />
+            <ToastContainer/>
             {/* <DashboardNavbar />  */}
             { /*  this navbar appears after logged in*/}
             <Routes>
                 <Route path="/" element={<Home />} />
-                <Route path="/login" element={<AuthPage />} />
+                <Route path="/signup" element = {<RegisterPage/>}/>
+                <Route path="/login" element = {<LoginPage/>}/>
                 {/* <Route path="/doctor" element={<Dashboard />} /> */}
-                <Route path="/doctor" element={<DoctorDashboardLayout />}>
+                 {isLogin && <>
+                    <Route path="/doctor" element={<DoctorDashboardLayout />}>
                         <Route path="dashboard" element={<DashBoardMain />} />
                         <Route path="appointments" element={<AppointmentSection />} />
                         <Route path="appointments-page" element={<AppointmentPage />} />
@@ -70,6 +79,7 @@ const App = () => {
                 </Route>
                 <Route path="/about" element={<About />} />
                 <Route path="/video-call/:id" element={<Videocall />} />
+                </>}
                 <Route path="/services" element={<Services />} />
                 <Route path="/services/free-checkup" element={<SingleService />} />
                 <Route path="/doctors" element={<Doctors />} />

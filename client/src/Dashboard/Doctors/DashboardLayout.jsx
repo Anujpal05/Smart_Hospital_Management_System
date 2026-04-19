@@ -5,13 +5,17 @@ import {
   FaUsers,
   FaCalendarAlt,
   FaClock,
-  FaCog,
-  FaSignOutAlt,
   FaFileMedical,
   FaFileInvoice
 } from "react-icons/fa";
+import { useDispatch } from "react-redux";
+import { logout } from "../../store/authSlice";
+import { CiLogout } from "react-icons/ci";
 
 export default function DoctorDashboardLayout() {
+  const dispatch = useDispatch();
+
+
 
   return (
     <div className="min-h-screen bg-[#eef2ff] p-6 font-sans">
@@ -45,7 +49,7 @@ export default function DoctorDashboardLayout() {
             <MenuItem icon={<FaUserMd />} label="Profile" to="/doctor/profile" />
 
             {/* <MenuItem icon={<FaCog />} label="Settings" to="/doctor/settings" /> */}
-            <MenuItem icon={<FaSignOutAlt />} label="Logout" to="/logout" />
+            <MenuItem icon={<CiLogout />} label="Logout" to="/" onClick={() => dispatch(logout())}/>
 
           </nav>
 

@@ -7,7 +7,7 @@ import Appointment_Section from '../Components/Home/Appointment_Section';
 import Doctors_Section from '../Components/Home/Doctors_Section';
 import News_Section from '../Components/Home/News_Section';
 import Contact_Section from '../Components/Home/Contact_Section';
-import AuthPage from '../Components/Auth/AuthPage';
+import AuthPage from '../Components/Auth/RegisterPage';
 
 const Home = () => {
   return (
