@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import HeroSection from '../Components/Home/HeroSection';
 import Welcome from '../Components/Home/Welcome';
 import Service from '../Components/Home/Service';
@@ -8,8 +8,33 @@ import Doctors_Section from '../Components/Home/Doctors_Section';
 import News_Section from '../Components/Home/News_Section';
 import Contact_Section from '../Components/Home/Contact_Section';
 import AuthPage from '../Components/Auth/AuthPage';
+import { setUser } from '../slices/authSlice';
+import { useNavigate } from 'react-router-dom';
+import { useDispatch } from 'react-redux';
 
 const Home = () => {
+  const dispatch = useDispatch();
+    const navigate = useNavigate();
+    const getStoredUser = () => {
+    try {
+        const user = localStorage.getItem("user");
+        return user ? JSON.parse(user) : null;
+    } catch (err) {
+        return null;
+    }
+    };
+      useEffect(() => {
+    const user = getStoredUser();
+
+    if (user) {
+      dispatch(setUser(user));
+      if(user.role === "PATIENT"){
+        navigate("/patient/dashboard");
+      }else if(user.role === "DOCTOR"){
+        navigate("/doctor/dashboard");
+      }
+    }
+  }, []);
   return (
     <div className='overflow-hidden'>
       <HeroSection />

@@ -1,7 +1,20 @@
 import { FiCamera, FiPlus, FiMail } from "react-icons/fi";
 import { MdVerified } from "react-icons/md";
-import React from "react";
+import React, { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { getPatientByUserIdAction } from "../../../actions/patientAction";
 export default function ProfileSettings() {
+  const {user} = useSelector((state) => state.auth);
+  const dispatch = useDispatch();
+  const {patient} = useSelector((state) => state.patient);
+
+  useEffect(()=>{
+    console.log("user in profile", user);
+    console.log("patient in profile", patient);
+    if(user && user.role === "PATIENT" && !patient){
+      dispatch(getPatientByUserIdAction());
+    } 
+  },[user,patient]);
   return (
     <div className="col-span-2 bg-white rounded-2xl p-6 shadow-md">
 
@@ -12,7 +25,16 @@ export default function ProfileSettings() {
         
         <div className="relative">
           <div className="w-28 h-28 rounded-full border-2 border-dashed border-gray-300 flex items-center justify-center text-gray-400">
-            <FiCamera size={28}/>
+            {
+              patient && patient?.profilePhoto?.url ? (
+                <img
+                  src={patient.profilePhoto.url} alt="Profile"
+                  className="w-full h-full object-contain rounded-full"
+                />
+              ) : (
+                <FiCamera size={28}/>
+              )
+            }
           </div>
 
           <button className="absolute -top-1 -right-1 bg-purple-100 p-1 rounded-full">
@@ -31,15 +53,16 @@ export default function ProfileSettings() {
 
         <div className="">
           <label className="text-xs mr-3 text-gray-500">First Name</label>
-          <input className="input" defaultValue="Clara"/>
+          <input className="input" defaultValue={user && user?.name.split(" ")[0]}/>
         </div>
 
         <div className="">
           <label className="text-xs mr-3 text-gray-500">Last Name</label>
-          <input className="input" defaultValue="Redfield"/>
+          <input className="input" defaultValue={user && user?.name.split(" ")[1]}/>
         </div>
 
-        <div className="">
+        {
+          patient && patient?.role === "DOCTOR" && <><div className="">
           <label className="text-xs mr-3 text-gray-500">Prefix Title</label>
           <input className="input" defaultValue="Dr."/>
         </div>
@@ -47,23 +70,26 @@ export default function ProfileSettings() {
         <div className="">
           <label className="text-xs mr-3 text-gray-500">Suffix Title</label>
           <input className="input"/>
-        </div>
-
+        </div> 
         <div className="col-span-2">
           <label className="text-xs mr-3 text-gray-500">Role</label>
           <select className="input">
             <option>General Practitioner (GP)</option>
           </select>
         </div>
+        </>
+        }
+
+        
 
         {/* PHONE */}
         <div className="col-span-2">
-          <label className="text-xs text-gray-500">Phone Number</label>
+          <label className="text-xs text-gray-500">YOUR ID</label>
 
           <div className="flex items-center gap-3">
             <input
               className="input flex-1"
-              defaultValue="+62 8125 7789 655"
+              defaultValue={user && user?.userId}
             />
 
             <span className="flex items-center text-green-500 text-sm gap-1">
@@ -81,7 +107,7 @@ export default function ProfileSettings() {
             <input
               disabled
               className="input flex-1 bg-gray-100"
-              defaultValue="clara.redfield@gmail.com"
+              defaultValue={user && user?.email || "Not provided"}
             />
 
             <button className="flex items-center gap-2 px-4 border rounded-lg text-sm">

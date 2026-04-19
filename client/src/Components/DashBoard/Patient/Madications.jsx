@@ -14,6 +14,7 @@ import {
   Circle
 } from 'lucide-react';
 import { InputField } from './InputField';
+import { useSelector } from 'react-redux';
 
 const MEDICATION_SUGGESTIONS = [
   "Amoxicillin", "Atorvastatin", "Azithromycin", "Ciprofloxacin", "Clopidogrel", 
@@ -36,6 +37,7 @@ const Madications = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [showSuggestions, setShowSuggestions] = useState(false);
+   const {user} = useSelector((state) => state.auth);
   
   const [formData, setFormData] = useState({
     name: "",
@@ -135,8 +137,8 @@ const Madications = () => {
               <img src="https://ui-avatars.com/api/?name=John+Doe&background=e2e8f0&color=475569" alt="Patient" />
             </div>
             <div>
-              <h2 className="text-lg font-bold text-slate-800 leading-tight">John Doe</h2>
-              <p className="text-sm text-slate-500">PID-882934 | Male, 42 yrs</p>
+              <h2 className="text-lg font-bold text-slate-800 leading-tight">{user?.name || "John Doe"}</h2>
+              <p className="text-sm text-slate-500">{user && user?.userId} | Male, 42 yrs</p>
             </div>
           </div>
           <div className="h-10 w-px bg-slate-200 hidden md:block"></div>

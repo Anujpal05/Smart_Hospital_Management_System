@@ -6,6 +6,7 @@ const addPatient = async (req, res) => {
   try {
     const role = req.user?.role;
     const { userId } = req.body;
+    console.log("Add patient request by user:", userId);
     const file = req.file;
 
     if (role != "DOCTOR" && role != "ADMIN") {
@@ -16,14 +17,15 @@ const addPatient = async (req, res) => {
       return res.status(404).json({ message: "User Id is required!" });
     }
 
-    const user = await User.findById(userId);
+    const user = await User.findOne({ userId : userId });
+    console.log("User found for patient creation:");
     if (!user) {
-      return res.status(404).json({ message: "User not found!" });
+      return res.status(404).json({ message: "User not found!" ,success: false});
     }
 
-    const existingPatient = await Patient.findOne({ userId });
+    const existingPatient = await Patient.findOne({ userId : user._id });
     if (existingPatient) {
-      return res.status(400).json({ message: "Patient already exist" });
+      return res.status(400).json({ message: "Patient already exist" ,success: false});
     }
 
     if(file){
@@ -37,12 +39,19 @@ const addPatient = async (req, res) => {
       }
     }
 
-    const patient = await Patient.create(req.body);
-    res.json({ message: "Patient added successfully!" });
+    const patientData = {
+  ...req.body,
+  userId: user._id, 
+    };
+    console.log("Creating patient with data:", patientData);
+
+    const patient = await Patient.create(patientData);
+    return res.json({ message: "Patient added successfully!" ,success: true, data: patient });
   } catch (error) {
-    res
+    console.error("Add patient error:", error);
+    return res
       .status(500)
-      .json({ message: error.message || "Internal Server Error!" });
+      .json({ message: error.message || "Internal Server Error!",success: false });
   }
 };
 
@@ -92,7 +101,36 @@ const getPatientById = async (req, res) => {
       .json({ message: error.message || "Internal Server Error!" });
   }
 };
+const getPatientByuserId = async (req, res) => {
+  try {
+    const userId = req.params?.id;
+    const role = req.user?.role;
+    const id = req.user?.id;
 
+    if (!userId) {
+      return res.status(400).json({ message: "User ID is required!" });
+    }
+
+    const patient = await Patient.findOne({ userId }).populate(
+      "userId",
+      "-password",
+    );
+
+    if (role === "PATIENT" && patient.userId?._id != id) {
+      return res.status(403).json({ message: "Access denied!",success: false });
+    }
+
+    if (!patient) {
+      return res.status(404).json({ message: "Patient not found!",success: false });
+    }
+
+    return res.json({ message: "Patient fetched successfully!",success: true, data: patient });
+  } catch (error) {
+    res
+      .status(500)
+      .json({ message: error.message || "Internal Server Error!",success: false });
+  }
+};
 const updatePatient = async (req, res) => {
   try {
     const role = req.user.role;
@@ -212,4 +250,5 @@ export {
   getPatientsByDoctor,
   totalPatients,
   getMedicalReports,
+  getPatientByuserId
 };

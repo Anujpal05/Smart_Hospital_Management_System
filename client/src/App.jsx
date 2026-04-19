@@ -1,9 +1,9 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import Home from './Pages/Home'
 import Navbar from './Components/Home/Navbar';
 import About from './Pages/About';
 import Footer from './Components/Home/Footer';
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, useNavigate } from 'react-router-dom';
 import AuthPage from './Components/Auth/AuthPage';
 import Dashboard from './Dashboard/Doctors/Doctors';
 import Videocall from './Components/DashBoard/Doctors/Videocall';
@@ -33,13 +33,16 @@ import AiAssistnate from './Dashboard/patient/AiAssistnate';
 import Madications from './Components/DashBoard/Patient/Madications';
 import AppointmentPatient from './Components/DashBoard/Patient/AppointmentPatient';
 import MedicalRecords from './Components/DashBoard/Patient/MedicalRecords';
+import { useDispatch } from 'react-redux';
+import { setUser } from './slices/authSlice';
+import AdminAppointment from './Dashboard/Admin/AdminAppointment';
 
 const App = () => {
     return (
         <BrowserRouter>
         <ScrollToTop/>
-            <Navbar />  
-            {/* <DashboardNavbar />  */}
+            {/* <Navbar />   */}
+            <DashboardNavbar /> 
             { /*  this navbar appears after logged in*/}
             <Routes>
                 <Route path="/" element={<Home />} />
@@ -77,6 +80,7 @@ const App = () => {
                 <Route path="/news" element={<News />} />
                 <Route path="/news-details" element={<NewsDetails />} />
                 <Route path="/appointment" element={<Appointment/>}/>
+                <Route path="/admin" element={<AdminAppointment/>}/>
 
             </Routes>
             <Footer />

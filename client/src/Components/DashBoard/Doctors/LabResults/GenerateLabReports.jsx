@@ -13,27 +13,12 @@ import {
   Loader2,
   MessageSquareQuote
 } from 'lucide-react';
+import { INITIAL_PATIENT, INITIAL_TESTS } from '../../../../Data/patientdata';
+import html2canvas from 'html2canvas';
+import jsPDF from 'jspdf';
 
 // --- Default Data for Seeding ---
-const INITIAL_PATIENT = {
-  name: "Lyubochka Svetka",
-  age: "41",
-  sex: "Male",
-  labId: "02232160XXXX",
-  regDate: "20-Feb-2023 09:10",
-  collectedOn: "20-Feb-2023 08:53",
-  sampleType: "EDTA Blood, Serum",
-  refBy: "Dr. Self",
-  passportNo: "N/A",
-  remarks: "RBC Morphology: Normochromic Normocytic. WBCs Series shows normal morphology. Platelets are adequate with normal morphology. Malarial parasite is not detected."
-};
 
-const INITIAL_TESTS = [
-  { id: 1, name: "Hemoglobin", result: "14.5", unit: "g/dL", ref: "13.0-16.5", flag: "" },
-  { id: 2, name: "Fasting Blood Sugar", result: "141.0", unit: "mg/dL", ref: "74-106", flag: "H" },
-  { id: 3, name: "HbA1c", result: "7.10", unit: "%", ref: "4.0-5.6", flag: "H" },
-  { id: 4, name: "Cholesterol", result: "189.0", unit: "mg/dL", ref: "< 200", flag: "" },
-];
 
 const App = () => {
   const [patient, setPatient] = useState(INITIAL_PATIENT);
@@ -43,24 +28,6 @@ const App = () => {
   const reportRef = useRef(null);
 
   // Load external libraries dynamically to avoid build-time resolution errors
-  useEffect(() => {
-    const loadScript = (src) => {
-      return new Promise((resolve, reject) => {
-        const script = document.createElement('script');
-        script.src = src;
-        script.onload = resolve;
-        script.onerror = reject;
-        document.head.appendChild(script);
-      });
-    };
-
-    Promise.all([
-      loadScript('https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js'),
-      loadScript('https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js')
-    ])
-    .then(() => setLibsLoaded(true))
-    .catch(err => console.error("Failed to load PDF libraries", err));
-  }, []);
 
   // --- Handlers ---
   const handlePatientChange = (e) => {
@@ -82,38 +49,58 @@ const App = () => {
   };
 
   const downloadPDF = async () => {
-    if (!libsLoaded) return;
-    setIsGenerating(true);
-    
-    const element = reportRef.current;
-    
-    try {
-      // Use globals loaded from CDN
-      const html2canvas = window.html2canvas;
-      const { jsPDF } = window.jspdf;
+  setIsGenerating(true);
 
-      const canvas = await html2canvas(element, {
-        scale: 2,
-        useCORS: true,
-        logging: false,
-        backgroundColor: '#ffffff'
-      });
-      
-      const imgData = canvas.toDataURL('image/png');
-      const pdf = new jsPDF('p', 'mm', 'a4');
-      const imgProps = pdf.getImageProperties(imgData);
-      const pdfWidth = pdf.internal.pageSize.getWidth();
-      const pdfHeight = (imgProps.height * pdfWidth) / imgProps.width;
-      
-      pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight);
-      pdf.save(`Report_${patient.labId || 'Patient'}.pdf`);
-    } catch (error) {
-      console.error("PDF Generation Error:", error);
-    } finally {
-      setIsGenerating(false);
+  const element = reportRef.current;
+
+  // ✅ Inject safe styles
+  const style = document.createElement("style");
+  style.innerHTML = `
+    * {
+      color: #000 !important;
+      background-color: #fff !important;
+      border-color: #ccc !important;
     }
-  };
+  `;
+  document.head.appendChild(style);
 
+  try {
+    const canvas = await html2canvas(element, {
+      scale: 2,
+      useCORS: true,
+      backgroundColor: "#ffffff",
+    });
+
+    const imgData = canvas.toDataURL("image/png");
+
+    const pdf = new jsPDF("p", "mm", "a4");
+
+    const imgProps = pdf.getImageProperties(imgData);
+    const pdfWidth = pdf.internal.pageSize.getWidth();
+    const pdfHeight = (imgProps.height * pdfWidth) / imgProps.width;
+
+    let heightLeft = pdfHeight;
+    let position = 0;
+
+    pdf.addImage(imgData, "PNG", 0, position, pdfWidth, pdfHeight);
+    heightLeft -= pdf.internal.pageSize.getHeight();
+
+    while (heightLeft > 0) {
+      position = heightLeft - pdfHeight;
+      pdf.addPage();
+      pdf.addImage(imgData, "PNG", 0, position, pdfWidth, pdfHeight);
+      heightLeft -= pdf.internal.pageSize.getHeight();
+    }
+
+    pdf.save(`Report_${patient.labId || "Patient"}.pdf`);
+  } catch (error) {
+    console.error("PDF Generation Error:", error);
+  } finally {
+    // ✅ Remove override
+    document.head.removeChild(style);
+    setIsGenerating(false);
+  }
+};
   return (
     <div className="min-h-screen bg-slate-50 p-4 md:p-8 font-sans text-slate-900">
       <div className="max-w-7xl mx-auto flex flex-col gap-8">
@@ -136,11 +123,18 @@ const App = () => {
               <User size={18} />
               <h2>Patient Information</h2>
             </div>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="grid grid-cols-2 md:grid-cols-2 gap-4">
               <div className="md:col-span-2">
                 <label className="block text-xs font-bold text-slate-400 uppercase tracking-wider">Full Name</label>
                 <input 
                   name="name" value={patient.name} onChange={handlePatientChange}
+                  className="w-full mt-1 px-3 py-2 bg-slate-50 border border-slate-200 rounded-md focus:ring-2 focus:ring-blue-500 focus:bg-white outline-none transition-all"
+                />
+              </div>
+              <div className="md:col-span-2">
+                <label className="block text-xs font-bold text-slate-400 uppercase tracking-wider">Report Name</label>
+                <input 
+                  name="reportName" value={patient.reportName} onChange={handlePatientChange}
                   className="w-full mt-1 px-3 py-2 bg-slate-50 border border-slate-200 rounded-md focus:ring-2 focus:ring-blue-500 focus:bg-white outline-none transition-all"
                 />
               </div>
@@ -288,14 +282,12 @@ const App = () => {
 
           <button 
             onClick={downloadPDF}
-            disabled={isGenerating || !libsLoaded}
+            disabled={isGenerating}
             className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-4 rounded-xl flex items-center justify-center gap-2 transition-all shadow-lg shadow-blue-200 disabled:opacity-50 disabled:cursor-not-allowed group"
           >
             {isGenerating ? (
               <Loader2 className="animate-spin" size={20} />
-            ) : !libsLoaded ? (
-              <span>Initializing Libraries...</span>
-            ) : (
+            ) :(
               <>
                 <Download size={20} className="group-hover:-translate-y-1 transition-transform" />
                 Generate & Export Official PDF
@@ -356,7 +348,7 @@ const App = () => {
                 </div>
               </div>
 
-              <div className="text-center font-black text-[18px] uppercase tracking-[0.2em] mb-8 text-blue-900 border-y-2 border-slate-200 py-1">LABORATORY TEST REPORT</div>
+              <div className="text-center font-black text-[18px] uppercase tracking-[0.2em] mb-8 text-blue-900 border-y-2 border-slate-200 py-1">{patient.reportName}</div>
 
               {/* Table Data */}
               <div className="flex-grow">

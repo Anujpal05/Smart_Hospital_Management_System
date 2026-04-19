@@ -31,7 +31,6 @@ const PatientDashboardLayout = () => {
             <MenuItem icon={<BrainCircuit />} label="AI Assistant" to="/patient/ai-assistant" isNew={true} />
             <MenuItem icon={<FaFileMedical />} label="Medical Records" to="/patient/medical-records" />
             <MenuItem icon={<FaCapsules />} label="Madications" to="/patient/madications" />
-            <MenuItem icon={<FaFacebookMessenger />} label="Messages" to="/patient/Messages" />
             <MenuItem icon={<FaUserMd />} label="Profile" to="/patient/profile" />
 
             {/* <MenuItem icon={<FaCog />} label="Settings" to="/doctor/settings" /> */}

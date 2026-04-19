@@ -11,7 +11,10 @@ import {
   ShieldCheck,
   Activity
 } from "lucide-react";
+import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
+import { loginAction, signupAction } from "../../actions/authActions";
+import toast from "react-hot-toast";
 
 
 
@@ -19,14 +22,18 @@ const AuthPage = () => {
   const [isLogin, setIsLogin] = useState(true);
   const [isLoading, setIsLoading] = useState(false);
   const [showSuccess, setShowSuccess] = useState(false);
-  const navigate = useNavigate()
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+  useEffect(()=>{
+    console.log("isLogin state changed:", isLogin);
+  },[isLogin])
   
   // Form State
   const [formData, setFormData] = useState({
-    fullName: "",
-    email: "",
-    password: "",
-    confirmPassword: "",
+    fullName: "anuj ali mazari",
+    email: "anuj@gmaill.com",
+    password: "1234",
+    confirmPassword: "1234",
     rememberMe: false
   });
 
@@ -40,21 +47,31 @@ const AuthPage = () => {
   };
 
   // Handle form submission
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    setIsLoading(true);
+    // setIsLoading(true);
+    console.log("Submitting form with data:", formData);
+    if(!isLogin){
+      const response =  await dispatch( signupAction({ name: formData.fullName,email:formData.email , password : formData.password
+      } , navigate));
+       console.log("action response:", response);
+    }else {
+       const response =  await dispatch( loginAction({ email:formData.email , password : formData.password
+       } , navigate));
+       console.log("action response:", response);
+    }
 
     // Simulate API Call
-    setTimeout(() => {
-      setIsLoading(false);
-      setShowSuccess(true);
-      console.log("Form Data Submitted:", formData);
-      setTimeout(() => setShowSuccess(false), 3000);
-	  navigate("/patient/dashboard")
+    // setTimeout(() => {
+    //   setIsLoading(false);
+    //   setShowSuccess(true);
+    //   console.log("Form Data Submitted:", formData);
+    //   setTimeout(() => setShowSuccess(false), 3000);
+	  // // navigate("/patient/dashboard")
 
       
-      // Reset after 3 seconds
-    }, 1500);
+    //   // Reset after 3 seconds
+    // }, 1500);
   };
 
   return (

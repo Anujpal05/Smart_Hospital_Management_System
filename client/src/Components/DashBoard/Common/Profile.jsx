@@ -5,12 +5,13 @@ import {
   FiLock,
   FiUserPlus,
 } from "react-icons/fi";
-import React from "react";
+import React, { useEffect } from "react";
 
 import { BsThreeDots } from "react-icons/bs";
 import { MdVerified } from "react-icons/md";
 import ProfileSettings from "./ProfileSettings";
 import NotificationSettings from "./NotificationSettings";
+import { useSelector } from "react-redux";
 
 const Profile = () => {
   return (

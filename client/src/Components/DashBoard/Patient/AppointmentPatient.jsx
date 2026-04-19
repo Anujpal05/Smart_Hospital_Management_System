@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import { 
   Users, 
   Calendar, 
@@ -25,6 +25,9 @@ import {
   Check,
   ChevronRight
 } from 'lucide-react';
+import { useDispatch, useSelector } from 'react-redux';
+import { getAllAppointmentsAction } from '../../../actions/doctorActions';
+import { appointmentStatus, place } from '../../../Data/appointment';
 
 // --- Mock Data ---
 const MOCK_APPOINTMENTS = [
@@ -33,6 +36,183 @@ const MOCK_APPOINTMENTS = [
   { id: 3, doctor: "Dr. Emma Wilson", specialty: "General Physician", date: "2023-10-15", time: "09:00 AM", status: "Completed", type: "In-Person", location: "Building C, Room 105", reason: "Annual Physical Exam", notes: "All vitals were normal. Recommended vitamin D supplements." },
   { id: 4, doctor: "Dr. Robert Fox", specialty: "Neurologist", date: "2023-09-20", time: "11:00 AM", status: "Canceled", type: "In-Person", location: "Building B, Room 201", reason: "Migraine management", notes: "Patient requested cancellation due to travel." },
 ];
+const ans = [
+    {
+        "appointmentinfo": {
+            "_id": "69d8c3aece76468ba41c3f93",
+            "doctor": {
+                "_id": "69d7ab5bc58eb8fb24f54b3a",
+                "name": "Dr. James Wilson",
+                "email": "drjameswilson@gmail.com",
+                "password": "$2b$10$v6AEVQ7gm76e6Zhafxu2YOIopyUqzhdGLBbqEVN7pSzDG3wWBUVUG",
+                "role": "DOCTOR",
+                "isActive": true,
+                "isVerified": true,
+                "createdAt": "2026-04-09T13:36:27.017Z",
+                "updatedAt": "2026-04-09T13:36:27.017Z",
+                "userId": "USER-00025",
+                "__v": 0
+            },
+            "user": "69d7e365fcd0c58a03663b5d",
+            "date": "2026-05-08T00:00:00.000Z",
+            "status": "PENDING",
+            "place": "OFFLINE",
+            "priority": "NORMAL",
+            "reason": "Skin rash consultation",
+            "createdAt": "2026-04-10T09:32:30.078Z",
+            "updatedAt": "2026-04-10T09:32:30.078Z",
+            "__v": 0
+        },
+        "doctorInfo": {
+            "profilePhoto": {
+                "url": "https://res.cloudinary.com/dcfy1v0ab/image/upload/v1772214254/Rectangle_20_2_asahdp.png"
+            },
+            "availableTime": {
+                "start": "09:00 AM",
+                "end": "06:00 PM"
+            },
+            "_id": "69d7ab5bc58eb8fb24f54b3e",
+            "userId": "69d7ab5bc58eb8fb24f54b3a",
+            "biography": "Cancer specialist with modern treatment techniques.",
+            "age": 50,
+            "gender": "Male",
+            "dateOfBirth": "1975-02-11T00:00:00.000Z",
+            "city": "Ahmedabad",
+            "state": "Gujarat",
+            "specialization": [
+                "Oncology",
+                "General Medicine"
+            ],
+            "experience": 22,
+            "qualification": "MBBS, DM Oncology",
+            "hospitalName": "Zydus Hospital",
+            "licenseNumber": "LIC10003",
+            "consultationFee": 1000,
+            "availableDays": [],
+            "assignedPatients": [],
+            "createdAt": "2026-04-09T13:36:27.020Z",
+            "updatedAt": "2026-04-09T13:36:27.020Z",
+            "doctorId": "DOC-00025",
+            "__v": 0
+        }
+    }, {
+        "appointmentinfo": {
+            "_id": "69d8c3aece76468ba41c3f93",
+            "doctor": {
+                "_id": "69d7ab5bc58eb8fb24f54b3a",
+                "name": "Dr. James Wilson",
+                "email": "drjameswilson@gmail.com",
+                "password": "$2b$10$v6AEVQ7gm76e6Zhafxu2YOIopyUqzhdGLBbqEVN7pSzDG3wWBUVUG",
+                "role": "DOCTOR",
+                "isActive": true,
+                "isVerified": true,
+                "createdAt": "2026-04-09T13:36:27.017Z",
+                "updatedAt": "2026-04-09T13:36:27.017Z",
+                "userId": "USER-00025",
+                "__v": 0
+            },
+            "user": "69d7e365fcd0c58a03663b5d",
+            "date": "2026-05-08T00:00:00.000Z",
+            "status": "PENDING",
+            "place": "OFFLINE",
+            "priority": "NORMAL",
+            "reason": "Skin rash consultation",
+            "createdAt": "2026-04-10T09:32:30.078Z",
+            "updatedAt": "2026-04-10T09:32:30.078Z",
+            "__v": 0
+        },
+        "doctorInfo": {
+            "profilePhoto": {
+                "url": "https://res.cloudinary.com/dcfy1v0ab/image/upload/v1772214254/Rectangle_20_2_asahdp.png"
+            },
+            "availableTime": {
+                "start": "09:00 AM",
+                "end": "06:00 PM"
+            },
+            "_id": "69d7ab5bc58eb8fb24f54b3e",
+            "userId": "69d7ab5bc58eb8fb24f54b3a",
+            "biography": "Cancer specialist with modern treatment techniques.",
+            "age": 50,
+            "gender": "Male",
+            "dateOfBirth": "1975-02-11T00:00:00.000Z",
+            "city": "Ahmedabad",
+            "state": "Gujarat",
+            "specialization": [
+                "Oncology",
+                "General Medicine"
+            ],
+            "experience": 22,
+            "qualification": "MBBS, DM Oncology",
+            "hospitalName": "Zydus Hospital",
+            "licenseNumber": "LIC10003",
+            "consultationFee": 1000,
+            "availableDays": [],
+            "assignedPatients": [],
+            "createdAt": "2026-04-09T13:36:27.020Z",
+            "updatedAt": "2026-04-09T13:36:27.020Z",
+            "doctorId": "DOC-00025",
+            "__v": 0
+        }
+    }, {
+        "appointmentinfo": {
+            "_id": "69d8c3aece76468ba41c3f93",
+            "doctor": {
+                "_id": "69d7ab5bc58eb8fb24f54b3a",
+                "name": "Dr. James Wilson",
+                "email": "drjameswilson@gmail.com",
+                "password": "$2b$10$v6AEVQ7gm76e6Zhafxu2YOIopyUqzhdGLBbqEVN7pSzDG3wWBUVUG",
+                "role": "DOCTOR",
+                "isActive": true,
+                "isVerified": true,
+                "createdAt": "2026-04-09T13:36:27.017Z",
+                "updatedAt": "2026-04-09T13:36:27.017Z",
+                "userId": "USER-00025",
+                "__v": 0
+            },
+            "user": "69d7e365fcd0c58a03663b5d",
+            "date": "2026-05-08T00:00:00.000Z",
+            "status": "PENDING",
+            "place": "OFFLINE",
+            "priority": "NORMAL",
+            "reason": "Skin rash consultation",
+            "createdAt": "2026-04-10T09:32:30.078Z",
+            "updatedAt": "2026-04-10T09:32:30.078Z",
+            "__v": 0
+        },
+        "doctorInfo": {
+            "profilePhoto": {
+                "url": "https://res.cloudinary.com/dcfy1v0ab/image/upload/v1772214254/Rectangle_20_2_asahdp.png"
+            },
+            "availableTime": {
+                "start": "09:00 AM",
+                "end": "06:00 PM"
+            },
+            "_id": "69d7ab5bc58eb8fb24f54b3e",
+            "userId": "69d7ab5bc58eb8fb24f54b3a",
+            "biography": "Cancer specialist with modern treatment techniques.",
+            "age": 50,
+            "gender": "Male",
+            "dateOfBirth": "1975-02-11T00:00:00.000Z",
+            "city": "Ahmedabad",
+            "state": "Gujarat",
+            "specialization": [
+                "Oncology",
+                "General Medicine"
+            ],
+            "experience": 22,
+            "qualification": "MBBS, DM Oncology",
+            "hospitalName": "Zydus Hospital",
+            "licenseNumber": "LIC10003",
+            "consultationFee": 1000,
+            "availableDays": [],
+            "assignedPatients": [],
+            "createdAt": "2026-04-09T13:36:27.020Z",
+            "updatedAt": "2026-04-09T13:36:27.020Z",
+            "doctorId": "DOC-00025",
+            "__v": 0
+        }
+    }
+]
 
 
 
@@ -55,14 +235,14 @@ const DetailModal = ({ appointment, onClose }) => {
               <UserCircle size={40} />
             </div>
             <div>
-              <h4 className="text-xl font-bold text-gray-900">{appointment.doctor}</h4>
-              <p className="text-blue-600 font-medium">{appointment.specialty}</p>
+              <h4 className="text-xl font-bold text-gray-900">{appointment.appointmentinfo.doctor.name}</h4>
+              <p className="text-blue-600 font-medium">{appointment.doctorInfo.specialization[0]}</p>
               <span className={`inline-block mt-1 text-[10px] font-bold px-2 py-0.5 rounded-full uppercase ${
-                appointment.status === 'Confirmed' ? 'bg-green-100 text-green-700' :
-                appointment.status === 'Pending' ? 'bg-amber-100 text-amber-700' :
-                appointment.status === 'Canceled' ? 'bg-red-100 text-red-700' : 'bg-gray-100 text-gray-700'
+                appointment.status === appointmentStatus.confirmed ? 'bg-green-100 text-green-700' :
+                appointment.status === appointmentStatus.pending ? 'bg-amber-100 text-amber-700' :
+                appointment.status === appointmentStatus.cancelled ? 'bg-red-100 text-red-700' : 'bg-gray-100 text-gray-700'
               }`}>
-                {appointment.status}
+                {appointment.appointmentinfo.status}
               </span>
             </div>
           </div>
@@ -72,31 +252,31 @@ const DetailModal = ({ appointment, onClose }) => {
               <p className="text-xs text-gray-400 font-medium uppercase tracking-wider">Date & Time</p>
               <div className="flex items-center gap-2 text-gray-700">
                 <Calendar size={16} className="text-blue-500" />
-                <span className="font-semibold">{appointment.date}</span>
+                <span className="font-semibold">{new Date(appointment.appointmentinfo.date).toDateString()}</span>
               </div>
               <div className="flex items-center gap-2 text-gray-700">
                 <Clock size={16} className="text-blue-500" />
-                <span className="font-semibold">{appointment.time}</span>
+                <span className="font-semibold">{new Date(appointment.appointmentinfo.date).getHours() } : {new Date(appointment.appointmentinfo.date).getMinutes() } </span>
               </div>
             </div>
             <div className="space-y-1">
               <p className="text-xs text-gray-400 font-medium uppercase tracking-wider">Mode & Location</p>
               <div className="flex items-center gap-2 text-gray-700">
                 {appointment.type === 'Video Call' ? <Video size={16} className="text-blue-500" /> : <MapPin size={16} className="text-blue-500" />}
-                <span className="font-semibold">{appointment.type}</span>
+                <span className="font-semibold">{appointment.appointmentinfo.place === place.offline ? "In-Clinic" : "Video Call"}</span>
               </div>
-              <p className="text-sm text-gray-500 truncate pl-6">{appointment.location}</p>
+              <p className="text-sm text-gray-500 truncate pl-6">{appointment.appointmentinfo.priority}</p>
             </div>
           </div>
 
           <div className="space-y-2">
             <p className="text-xs text-gray-400 font-medium uppercase tracking-wider">Reason for Visit</p>
             <p className="text-gray-700 bg-gray-50 p-3 rounded-xl text-sm border border-gray-100 leading-relaxed font-medium">
-              {appointment.reason}
+              {appointment.appointmentinfo.reason}
             </p>
           </div>
 
-          {appointment.notes && (
+          {/* {appointment.notes && (
             <div className="space-y-2">
               <p className="text-xs text-gray-400 font-medium uppercase tracking-wider">Physician's Notes</p>
               <div className="flex gap-2 p-3 rounded-xl bg-blue-50/50 border border-blue-100">
@@ -104,18 +284,13 @@ const DetailModal = ({ appointment, onClose }) => {
                 <p className="text-blue-800 text-sm italic">{appointment.notes}</p>
               </div>
             </div>
-          )}
+          )} */}
         </div>
 
         <div className="p-6 bg-gray-50 flex gap-3">
           <button onClick={onClose} className="flex-1 py-3 text-sm font-bold text-gray-600 bg-white border border-gray-200 rounded-xl hover:bg-gray-50 transition-colors">
             Close
           </button>
-          {appointment.status !== 'Canceled' && (
-            <button className="flex-1 py-3 text-sm font-bold text-white bg-blue-600 rounded-xl hover:bg-blue-700 shadow-lg shadow-blue-100 transition-colors">
-              {appointment.type === 'Video Call' ? 'Join Call' : 'Get Directions'}
-            </button>
-          )}
         </div>
       </div>
     </div>
@@ -125,10 +300,10 @@ const DetailModal = ({ appointment, onClose }) => {
 const AppointmentCard = ({ appointment, onViewDetails }) => {
   const getStatusColor = (status) => {
     switch (status) {
-      case 'Confirmed': return 'bg-green-100 text-green-700';
-      case 'Pending': return 'bg-amber-100 text-amber-700';
-      case 'Completed': return 'bg-gray-100 text-gray-700';
-      case 'Canceled': return 'bg-red-100 text-red-700';
+      case appointmentStatus.confirmed : return 'bg-green-100 text-green-700';
+      case appointmentStatus.pending: return 'bg-amber-100 text-amber-700';
+      case appointmentStatus.completed: return 'bg-gray-100 text-gray-700';
+      case appointmentStatus.cancelled: return 'bg-red-100 text-red-700';
       default: return 'bg-blue-100 text-blue-700';
     }
   };
@@ -141,28 +316,28 @@ const AppointmentCard = ({ appointment, onViewDetails }) => {
             <UserCircle size={28} />
           </div>
           <div>
-            <h4 className="font-bold text-gray-900">{appointment.doctor}</h4>
-            <p className="text-sm text-gray-500">{appointment.specialty}</p>
+            <h4 className="font-bold text-gray-900">{appointment.appointmentinfo.doctor.name}</h4>
+            <p className="text-sm text-gray-500">{appointment.appointmentinfo.place == place.offline ? "In-Clinic" : "Video-Call"}</p>
           </div>
         </div>
-        <span className={`text-[10px] font-bold px-3 py-1 rounded-full uppercase tracking-tight ${getStatusColor(appointment.status)}`}>
-          {appointment.status}
+        <span className={`text-[10px] font-bold px-3 py-1 rounded-full uppercase tracking-tight ${getStatusColor(appointment.appointmentinfo.status)}`}>
+          {appointment.appointmentinfo.status}
         </span>
       </div>
       
       <div className="grid grid-cols-2 gap-4 mb-4">
         <div className="flex items-center gap-2 text-sm text-gray-600">
           <Calendar size={16} className="text-blue-400" />
-          {appointment.date}
+          {appointment.length !== 0 && new Date(`${appointment.appointmentinfo.date.toString()}`).toDateString()}
         </div>
         <div className="flex items-center gap-2 text-sm text-gray-600">
           <Clock size={16} className="text-blue-400" />
-          {appointment.time}
+          <span className="font-semibold">{appointment.appointmentinfo.timeslot} </span>
         </div>
       </div>
 
       <div className="flex gap-2">
-        {appointment.status !== 'Completed' && appointment.status !== 'Canceled' ? (
+        {appointment.appointmentinfo.status !== appointmentStatus.completed && appointment.appointmentinfo.status !== appointmentStatus.cancelled ? (
           <button className="flex-1 py-2 text-sm font-semibold border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors">
             Reschedule
           </button>
@@ -187,15 +362,40 @@ const AppointmentCard = ({ appointment, onViewDetails }) => {
 const AppointmentPatient = () => {
   const [activeTab, setActiveTab] = useState('upcoming');
   const [selectedAppointment, setSelectedAppointment] = useState(null);
+  const [allAppointments, setAllAppointments] = useState([]);
+  const [activeappointment,setActiveAppointments]=useState(0);
+  const [completedAppointment,setCompletedAppointment]=useState(0);
+  const [cancelledAppointment,setCancelledAppointment]=useState(0);
+  const dispatch = useDispatch();
+  const { appointment , allAppointments: allAppointmentsFromRedux } = useSelector((state) => state.appointment);
 
   const filteredAppointments = useMemo(() => {
+    console.log("hii iam runned")
     switch (activeTab) {
-      case 'upcoming': return MOCK_APPOINTMENTS.filter(a => a.status === 'Confirmed' || a.status === 'Pending');
-      case 'past': return MOCK_APPOINTMENTS.filter(a => a.status === 'Completed');
-      case 'canceled': return MOCK_APPOINTMENTS.filter(a => a.status === 'Canceled');
+      case 'upcoming': return allAppointments?.filter(a => a.appointmentinfo.status === appointmentStatus.confirmed || a.appointmentinfo.status === appointmentStatus.pending);
+      case 'past': return allAppointments?.filter(a => a.appointmentinfo.status === appointmentStatus.completed);
+      case 'canceled': return allAppointments?.filter(a => a.appointmentinfo.status === appointmentStatus.cancelled);
       default: return [];
     }
-  }, [activeTab]);
+  }, [activeTab , allAppointmentsFromRedux ,allAppointments]);
+ 
+  useEffect(() => {
+    console.log("appoint ment from redux :"  ,allAppointmentsFromRedux)
+  if (allAppointmentsFromRedux && allAppointmentsFromRedux.length > 0) {
+    const recent = [...allAppointmentsFromRedux].sort((a, b) => {
+      return new Date(a?.appointmentinfo.date) - new Date(b?.appointmentinfo.date);
+    });
+
+    setAllAppointments(recent);
+  }
+}, [allAppointmentsFromRedux]); 
+  useEffect(()=>{
+  if(allAppointments){
+    setActiveAppointments(allAppointments.filter(a=>a.appointmentinfo.status === appointmentStatus.confirmed || a.appointmentinfo.status === appointmentStatus.pending).length);
+    setCompletedAppointment(allAppointments.filter(a=>a.appointmentinfo.status === appointmentStatus.completed).length);
+    setCancelledAppointment(allAppointments.filter(a=>a.appointmentinfo.status === appointmentStatus.cancelled).length);  
+  }
+  },[allAppointments]) 
 
   return (
     <div className="animate-in min-h-screen  fade-in slide-in-from-bottom-4 duration-500">
@@ -213,24 +413,21 @@ const AppointmentPatient = () => {
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
         <div className="bg-blue-600 rounded-3xl p-6 text-white shadow-xl shadow-blue-100">
           <p className="text-blue-100 text-xs font-bold uppercase tracking-widest mb-1">Active</p>
-          <h3 className="text-4xl font-bold">2</h3>
+          <h3 className="text-4xl font-bold">{activeappointment}</h3>
           <div className="mt-4 flex items-center gap-2 text-xs bg-white/10 w-fit px-3 py-1.5 rounded-full">
-            <Clock size={14} /> Next: Nov 24, 10:30 AM
+            <Clock size={14} /> Next: {allAppointments && allAppointments.length > 0 && new Date(allAppointments[0].appointmentinfo.date).toDateString()}
           </div>
         </div>
         <div className="bg-white border border-gray-100 rounded-3xl p-6 shadow-sm">
           <p className="text-gray-400 text-xs font-bold uppercase tracking-widest mb-1">Completed</p>
-          <h3 className="text-4xl font-bold text-gray-900">12</h3>
+          <h3 className="text-4xl font-bold text-gray-900">{completedAppointment}</h3>
           <p className="text-xs text-green-500 mt-4 flex items-center gap-1 font-bold italic">
             <CheckCircle2 size={14} /> Health is looking great!
           </p>
         </div>
         <div className="bg-white border border-gray-100 rounded-3xl p-6 shadow-sm">
           <p className="text-gray-400 text-xs font-bold uppercase tracking-widest mb-1">Canceled</p>
-          <h3 className="text-4xl font-bold text-gray-900">1</h3>
-          <button className="text-xs text-blue-600 mt-4 font-bold flex items-center gap-1 hover:underline">
-            View Policy <ChevronRight size={14} />
-          </button>
+          <h3 className="text-4xl font-bold text-gray-900">{cancelledAppointment}</h3>
         </div>
       </div>
 
@@ -247,11 +444,11 @@ const AppointmentPatient = () => {
         ))}
       </div>
 
-      {filteredAppointments.length > 0 ? (
+      {allAppointmentsFromRedux && filteredAppointments?.length > 0 ? (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {filteredAppointments.map(apt => (
-            <AppointmentCard key={apt.id} appointment={apt} onViewDetails={(a) => setSelectedAppointment(a)} />
-          ))}
+          {filteredAppointments?.map(apt => {
+           return <AppointmentCard key={apt.id} appointment={apt} onViewDetails={(a) => setSelectedAppointment(a)} />
+          })}
         </div>
       ) : (
         <div className="py-24 flex flex-col items-center justify-center text-center bg-white border border-dashed border-gray-200 rounded-3xl">

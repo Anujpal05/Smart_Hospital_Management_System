@@ -12,8 +12,8 @@ import { authenticateToken } from "../config/auth.js";
 
 const router = express.Router();
 
-router.post("/", authenticateToken, createAppointment);
 router.get("/", authenticateToken, getAppointments);
+router.post("/create-appointment", authenticateToken, createAppointment);
 router.get("/pending", authenticateToken, getPendingAppointments);
 router.get("/doctor-id/:id", authenticateToken, getDoctorAppointments);
 router.get("/patient-id/:id", authenticateToken, getPatientAppointments);

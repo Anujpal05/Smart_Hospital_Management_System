@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { BiPhoneCall } from "react-icons/bi";
 import { MdOutlineWatchLater } from "react-icons/md";
 import { IoLocationSharp } from "react-icons/io5";
@@ -8,6 +8,7 @@ import { RxCross1 } from "react-icons/rx";
 import { Link, useNavigate } from 'react-router-dom';
 import Modal from '../DashBoard/Common/Modal';
 import AuthPage from '../Auth/AuthPage';
+import { useSelector } from 'react-redux';
 
 
 
@@ -18,6 +19,10 @@ const Navbar = () => {
     const [authModal, setAuthModal] = useState(false);
     const [isLogin , setIsLogin] = useState(true);
     const navigate = useNavigate()
+    const {user , loading} = useSelector((state)=>state.auth)
+    useEffect(()=>{
+        console.log("hii i am navbar:",user)
+    },[loading])
 
   return (
     <>

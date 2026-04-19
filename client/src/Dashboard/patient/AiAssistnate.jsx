@@ -74,7 +74,7 @@ const AiAssistnate = () => {
                   <div className="bg-white rounded-3xl border border-slate-200 shadow-sm overflow-hidden">
                     <div className="p-6 border-b border-slate-100 flex justify-between items-center">
                       <h3 className="font-bold text-lg">Diagnostic History</h3>
-                      <button className="text-blue-600 text-sm font-bold hover:underline">View All</button>
+                      {/* <button className="text-blue-600 text-sm font-bold hover:underline">View All</button> */}
                     </div>
                     <div className="overflow-x-auto">
                       <table className="w-full">
