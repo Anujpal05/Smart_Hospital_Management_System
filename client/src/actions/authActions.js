@@ -2,6 +2,7 @@ import { API_ENDPOINTS} from "../utils/common/apis"
 import { toast } from "react-hot-toast";
 import {setIsAuthenticated,setLoading,setToken,setUser} from "../slices/authSlice"
 import { apiConnector } from "../utils/common/apiConnector";
+import { login } from "../store/authSlice";
 export function signupAction(userData ,navigate){
 	 return async (dispatch) => {
 		 const toastId = toast.loading("Signing up...");
@@ -55,10 +56,13 @@ export function loginAction(userData ,navigate){
 				localStorage.setItem("token", response.data.token);
 				localStorage.setItem("user", JSON.stringify(response.data.user));
 				if (response.data.user) {
+					dispatch(login());
 					 if(response.data.user.role === "PATIENT"){
 					   navigate("/patient/dashboard");
+					   localStorage.setItem("url","/patient/dashboard");
 					 }else if(response.data.user.role === "DOCTOR"){
 					   navigate("/doctor/dashboard");
+					   localStorage.setItem("url", "/doctor/dashboard");
 					 }
 				   }
 				   toast.success("Login successful!");

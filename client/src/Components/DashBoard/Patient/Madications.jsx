@@ -15,13 +15,7 @@ import {
 } from 'lucide-react';
 import { InputField } from './InputField';
 import { useSelector } from 'react-redux';
-
-const MEDICATION_SUGGESTIONS = [
-  "Amoxicillin", "Atorvastatin", "Azithromycin", "Ciprofloxacin", "Clopidogrel", 
-  "Gabapentin", "Hydrochlorothiazide", "Ibuprofen", "Insulin Glargine", "Lisinopril", 
-  "Losartan", "Metformin", "Metoprolol", "Omeprazole", "Pantoprazole", "Sertraline", 
-  "Simvastatin", "Tamsulosin", "Warfarin"
-];
+import { MEDICATION_SUGGESTIONS } from '../../../services/medicine';
 
 const DOSE_UNITS = [
   "Tablet(s)", "Capsule(s)", "ml", "mg", "mcg", "Drop(s)", "Puff(s)", "Patch", "Unit(s)", "tsp"

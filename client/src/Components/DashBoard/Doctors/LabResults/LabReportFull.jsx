@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useMemo, useState } from "react";
 import {
   FaUser,
   FaPhoneAlt,
@@ -9,25 +9,13 @@ import {
   FaArrowLeft,
   FaStar,
   FaFileMedical,
-  FaSave
+  FaSave,
 } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
-
-import {
-  LineChart,
-  Line,
-  ResponsiveContainer,
-  XAxis,
-  YAxis,
-  BarChart,
-  Bar,
-  ReferenceLine,
-  ReferenceDot,
-  PolarAngleAxis,
-  RadialBar,
-  RadialBarChart
-} from "recharts";
-import { TextAreaField } from "../../Patient/InputField";
+import html2canvas from "html2canvas";
+import jsPDF from "jspdf";
+import { useRef } from "react";
+import LabReportPDF from "./LabReportPDF";
 
 const sparkData = [
   { index: 1, value: 60 },
@@ -36,7 +24,7 @@ const sparkData = [
   { index: 4, value: 75 },
   { index: 5, value: 80 },
 ];
-const results = [
+const INITIAL_RESULTS = [
   {
     test: "Heart Rate",
     result: "76 bpm",
@@ -80,31 +68,148 @@ const results = [
     status: "Negative",
   },
 ];
-const note = "Recommend further cardiac evaluation and monitoring of the patient's heart rate over the next 24 hours."
 
+const note =
+  "Recommend further cardiac evaluation and monitoring of the patient's heart rate over the next 24 hours.";
 
 const LabReportView = () => {
-  const navigator = useNavigate()
-  const [doctorNote ,setDoctorNote] = useState(note)
-  const [isNote , setIsNote] = useState(false);
+  const reportRef = useRef(null);
+
+  const [results, setResults] = useState(INITIAL_RESULTS);
+
+  const [search, setSearch] = useState("");
+
+  const navigator = useNavigate();
+  const [doctorNote, setDoctorNote] = useState(note);
+  const [isDownloading, setIsDownloading] = useState(false);
+  const [report, setReport] = useState({
+    id: "LBR-102458",
+    patientId: "PT-10245",
+    patientName: "Jane Davise",
+    age: 32,
+    gender: "Female",
+    phone: "+91 9876543210",
+    doctor: "Dr. John Smith",
+    department: "Cardiology",
+    testName: "ECG",
+    reportDate: "12 Feb 2025",
+    technician: "John Carter",
+    status: "Completed",
+    technicianNote: "Patient shows mild irregularity in ECG pattern.",
+  });
+
+  const handleDownload = async () => {
+    try {
+      setIsDownloading(true);
+      const input = reportRef.current;
+
+      await new Promise((resolve) => setTimeout(resolve, 300));
+
+      if (!input) return;
+
+      const clonedElement =
+  input.cloneNode(true);
+
+// remove all problematic styles
+const allElements =
+  clonedElement.querySelectorAll("*");
+
+allElements.forEach((el) => {
+
+  el.style.color =
+    "#000000";
+
+  el.style.backgroundColor =
+    "#ffffff";
+
+  el.style.borderColor =
+    "#d1d5db";
+
+  el.style.boxShadow =
+    "none";
+});
+
+const canvas =
+  await html2canvas(
+    clonedElement,
+    {
+      scale:
+        window.innerWidth < 768
+          ? 1
+          : 2,
+
+      useCORS: true,
+
+      backgroundColor:
+        "#ffffff",
+
+      logging: false,
+
+      letterRendering: true,
+    }
+  );
+  
+      const imgData = canvas.toDataURL("image/jpeg", 0.9);
+      const pdf = new jsPDF("p", "mm", "a4");
+
+      const pdfWidth = 210;
+
+      const pageHeight = 297;
+
+      const imgWidth = pdfWidth;
+
+      const imgHeight = (canvas.height * imgWidth) / canvas.width;
+
+      let heightLeft = imgHeight;
+
+      let position = 0;
+
+      pdf.addImage(imgData, "PNG", 0, position, imgWidth, imgHeight);
+
+      heightLeft -= pageHeight;
+
+      while (heightLeft > 0) {
+        position = heightLeft - imgHeight;
+
+        pdf.addPage();
+
+        pdf.addImage(imgData, "PNG", 0, position, imgWidth, imgHeight);
+
+        heightLeft -= pageHeight;
+      }
+
+      pdf.save(`${report.patientName}_Lab_Report.pdf`);
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setIsDownloading(false);
+    }
+  };
+
+  const filteredResults = useMemo(() => {
+    return results.filter((item) =>
+      item.test.toLowerCase().includes(search.toLowerCase()),
+    );
+  }, [results, search]);
+
+  const handleNoteChange = React.useCallback((e) => {
+    setDoctorNote(e.target.value);
+  }, []);
+  const [isNote, setIsNote] = useState(false);
   return (
     <div className="p-6 bg-gray-100 min-h-screen">
-
       {/* HEADER */}
       <div className="mb-6">
         <h1 className="text-2xl font-semibold">
-          Lab Report <span className="text-gray-500">| LBR-102458</span>
+          Lab Report <span className="text-gray-500">| {report.id}</span>
         </h1>
       </div>
 
-      <div className="grid grid-cols-3 gap-6">
-
+      <div className="grid grid-cols-1 xl:grid-cols-3 gap-6">
         {/* LEFT SECTION */}
-        <div className="col-span-1 space-y-6">
-
+        <div className="xl:col-span-1 space-y-6">
           {/* PATIENT CARD */}
           <div className="bg-white rounded-xl shadow p-5">
-
             <h2 className="font-semibold mb-4 text-gray-700">
               Patient Information
             </h2>
@@ -116,106 +221,96 @@ const LabReportView = () => {
                 className="w-12 h-12 rounded-full"
               />
               <div>
-                <p className="font-semibold">Jane Davise</p>
+                <p className="font-semibold">{report.patientName}</p>
               </div>
             </div>
 
             <div className="space-y-2 text-sm">
-
               <p className="flex justify-between">
                 <span className="text-gray-500">Patient ID</span>
-                PT-10245
+                {report.patientId}{" "}
               </p>
 
               <p className="flex justify-between">
                 <span className="text-gray-500">Age / Gender</span>
-                32 / Female
+                {report.age} / {report.gender}{" "}
               </p>
 
               <p className="flex justify-between">
                 <span className="text-gray-500 flex items-center gap-1">
                   <FaPhoneAlt /> Phone
                 </span>
-                +91 9876543210
+                {report.phone}
               </p>
 
               <p className="flex justify-between">
                 <span className="text-gray-500 flex items-center gap-1">
                   <FaStethoscope /> Doctor
                 </span>
-                Dr. John Smith
+                {report.doctor}
               </p>
 
               <p className="flex justify-between">
                 <span className="text-gray-500 flex items-center gap-1">
                   <FaHospital /> Department
                 </span>
-                Cardiology
+                {report.department}
               </p>
-
             </div>
           </div>
 
           {/* NOTES */}
           <div className="bg-white rounded-xl shadow p-5">
-
             <h2 className="font-semibold mb-3">Test Results</h2>
 
             <div className="bg-yellow-50 p-3 rounded mb-3 text-sm">
               <p className="font-medium mb-3">Lab Technician Notes:</p>
-              <p className="text-gray-600">
-                Patient shows mild irregularity in ECG pattern.
-              </p>
-              <p className="text-xs text-gray-500 mt-1">
-                John Carter
-              </p>
+              <p className="text-gray-600">{report.technicianNote}</p>
+              <p className="text-xs text-gray-500 mt-1">{report.technician}</p>
             </div>
 
             <div className="bg-gray-100 p-3 rounded text-sm">
               <p className="font-medium mb-3">Doctor Notes:</p>
-                      { isNote ? <textarea
-                        autoFocus ={isNote}
-                        value={doctorNote}
-                        onChange={(e) => setDoctorNote(e.target.value)}
-                        className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:ring-2 focus:ring-slate-500 min-h-[100px] text-sm font-medium text-slate-700"
-                      /> : 
-                    <p className="text-gray-600">
-                      {doctorNote}
-                    </p>  }
+              {isNote ? (
+                <textarea
+                  autoFocus={isNote}
+                  value={doctorNote}
+                  onChange={handleNoteChange}
+                  className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:ring-2 focus:ring-slate-500 min-h-[100px] text-sm font-medium text-slate-700"
+                />
+              ) : (
+                <p className="text-gray-600">{doctorNote}</p>
+              )}
               <p className="text-xs border-t-2 pt-3  text-gray-500 mt-6">
-                Dr. John Smith
+                {report.doctor}
               </p>
             </div>
-
           </div>
-
         </div>
 
         {/* RIGHT SECTION */}
-        <div className="col-span-2 space-y-6">
-
+        <div className="xl:col-span-2 space-y-6">
           {/* REPORT INFO */}
-          <div className="bg-white rounded-xl shadow p-5 grid grid-cols-2 gap-4">
-
+          <div className="bg-white rounded-xl shadow p-5 grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
               <p className="text-gray-500 text-sm">Patient ID</p>
-              <p className="font-medium">LBR-102458</p>
+              <p className="font-medium">{report.id}</p>
             </div>
 
             <div className="text-right">
               <span className="bg-green-100 text-green-700 px-3 py-1 rounded text-sm">
-                Completed
+                {report.status}
               </span>
             </div>
 
             <div>
               <p className="text-gray-500 text-sm">Test Name</p>
-              <p>ECG</p>
+              <p>{report.testName}</p>
             </div>
 
             <div>
               <p className="text-gray-500 text-sm">Report Date</p>
-              <p>12 Feb 2025</p>
+              <p>{report.reportDate}</p>
             </div>
 
             <div>
@@ -225,96 +320,155 @@ const LabReportView = () => {
 
             <div>
               <p className="text-gray-500 text-sm">Lab Technician</p>
-              <p>John Carter</p>
+              <p>{report.technician}</p>
             </div>
-
           </div>
 
           {/* TEST RESULTS TABLE */}
           <div className="bg-white rounded-xl shadow p-5">
-
             <h2 className="font-semibold mb-4">Test Results</h2>
-
-            <table className="w-full text-sm">
-
-              <thead>
-                <tr className="text-gray-500 border-b">
-                  <th className="text-left py-2">Test</th>
-                  <th className="text-left py-2">Result</th>
-                  <th className="text-left py-2">Normal Range</th>
-                  <th className="text-left py-2">Status</th>
-                </tr>
-              </thead>
-
-              <tbody>
-
-                {results.map((item, index) => (
-                  <tr key={index} className="border-b">
-
-                    <td className="py-3">{item.test}</td>
-
-                    <td>{item.result}</td>
-
-                    <td>{item.range}</td>
-
-                    <td>
-
-                      <span
-                        className={`px-3 py-1 rounded text-xs
-                        ${item.status === "Normal"
-                            ? "bg-green-100 text-green-700"
-                            : "bg-blue-100 text-blue-700"
-                          }`}
-                      >
-                        {item.status}
-                      </span>
-
-                    </td>
-
+            <input
+              placeholder="Search test..."
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              className="mb-4 w-full sm:w-72 px-4 py-2 border rounded-xl outline-none"
+            />
+            <div className="overflow-x-auto">
+              <table className="w-full text-sm">
+                <thead>
+                  <tr className="text-gray-500 border-b">
+                    <th className="text-left py-2">Test</th>
+                    <th className="text-left py-2">Result</th>
+                    <th className="text-left py-2">Normal Range</th>
+                    <th className="text-left py-2">Status</th>
                   </tr>
-                ))}
+                </thead>
 
-              </tbody>
+                <tbody>
+                  {filteredResults.length === 0 && (
+                    <tr>
+                      <td
+                        colSpan={4}
+                        className="text-center py-10 text-gray-400"
+                      >
+                        No test results available.
+                      </td>
+                    </tr>
+                  )}
+                  {filteredResults.map((item, index) => (
+                    <tr key={index} className="border-b">
+                      <td className="py-3">{item.test}</td>
 
-            </table>
+                      <td>{item.result}</td>
 
+                      <td>{item.range}</td>
+
+                      <td>
+                        <span
+                          className={`px-3 py-1 rounded text-xs
+                          ${
+                            item.status === "Normal"
+                              ? "bg-green-100 text-green-700"
+                              : item.status === "Positive"
+                                ? "bg-blue-100 text-blue-700"
+                                : item.status === "Negative"
+                                  ? "bg-red-100 text-red-700"
+                                  : "bg-yellow-100 text-yellow-700"
+                          }`}
+                        >
+                          {item.status}
+                        </span>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
           </div>
 
           {/* ACTION BUTTONS */}
 
-          <div className="flex justify-between">
-
-            <div className="flex gap-3">
-
-              <button className="bg-blue-600  cursor-pointer  text-white px-4 py-2 rounded flex items-center gap-2">
-                <FaDownload /> Download PDF
+          <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
+            {" "}
+            <div className="grid grid-cols-2 sm:flex gap-3">
+              <button
+                disabled={isDownloading}
+                onClick={handleDownload}
+                className={`bg-blue-600 text-white px-4 py-2 rounded flex items-center justify-center gap-2 transition-all ${
+                  isDownloading
+                    ? "opacity-70 cursor-not-allowed"
+                    : "hover:bg-blue-700"
+                }`}
+              >
+                {isDownloading ? (
+                  "Generating..."
+                ) : (
+                  <>
+                    <FaDownload />
+                    Download PDF
+                  </>
+                )}
               </button>
 
-              <button className="border cursor-pointer  px-4 py-2 rounded flex items-center gap-2">
+              <button
+                onClick={() => window.print()}
+                className="border cursor-pointer  px-4 py-2 rounded flex items-center gap-2"
+              >
                 <FaPrint /> Print Report
               </button>
 
-             {!isNote ?  <button onClick={()=> {console.log(isNote);setIsNote(true)}} className="border  cursor-pointer px-4 py-2 rounded flex items-center gap-2">
-                <FaFileMedical /> Add Note
-              </button> :
-              <button onClick={()=> {console.log(isNote);setIsNote(false)}} className="border  cursor-pointer px-4 py-2 rounded flex items-center gap-2">
-                <FaSave /> Save Note
-              </button>}  
-
+              {!isNote ? (
+                <button
+                  onClick={() => {
+                    console.log(isNote);
+                    setIsNote(true);
+                  }}
+                  className="border  cursor-pointer px-4 py-2 rounded flex items-center gap-2"
+                >
+                  <FaFileMedical /> Add Note
+                </button>
+              ) : (
+                <button
+                  onClick={() => {
+                    console.log(isNote);
+                    setIsNote(false);
+                  }}
+                  className="border  cursor-pointer px-4 py-2 rounded flex items-center gap-2"
+                >
+                  <FaSave /> Save Note
+                </button>
+              )}
             </div>
-
             <div className="flex gap-3">
-
-              <button onClick={()=>navigator(-1)} className=" cursor-pointerborder px-4 py-2 rounded flex items-center gap-2">
+              <button
+                onClick={() => navigator(-1)}
+                className=" cursor-pointer border px-4 py-2 rounded flex items-center gap-2"
+              >
                 <FaArrowLeft /> Back
               </button>
-
             </div>
-
           </div>
-
         </div>
+      </div>
 
+      <div
+        style={{
+          position: "fixed",
+          top: 0,
+          left: "-99999px",
+          width: "210mm",
+          background: "#ffffff",
+          zIndex: -1,
+        }}
+      >
+        {" "}
+        <div ref={reportRef}>
+          <LabReportPDF
+            report={report}
+            results={filteredResults}
+            doctorNote={doctorNote}
+          />
+        </div>
       </div>
     </div>
   );
