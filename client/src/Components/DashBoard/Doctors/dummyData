@@ -1,0 +1,127 @@
+// ===============================
+// DUMMY PATIENT DATA
+// ===============================
+
+export const dummyPatients = [
+  {
+    id: "PT001",
+    name: "John Deo",
+    type: "New",
+    status: "On Going",
+    appointment: "10:00 AM",
+    checkup: "Heart Checkup",
+    dob: "12 Jan 1998",
+    sex: "Male",
+    weight: "72 KG",
+    height: "5.9 ft",
+    history: ["Diabetes", "Blood Pressure"],
+  },
+
+  {
+    id: "PT002",
+    name: "Maria Smith",
+    type: "Old",
+    status: "Upcoming",
+    appointment: "11:30 AM",
+    checkup: "Dental Checkup",
+    dob: "24 Feb 1995",
+    sex: "Female",
+    weight: "60 KG",
+    height: "5.5 ft",
+    history: ["Tooth Pain"],
+  },
+
+  {
+    id: "PT003",
+    name: "Rahul Sharma",
+    type: "New",
+    status: "Upcoming",
+    appointment: "12:00 PM",
+    checkup: "Eye Checkup",
+    dob: "15 Aug 2000",
+    sex: "Male",
+    weight: "68 KG",
+    height: "5.8 ft",
+    history: ["Eye Allergy"],
+  },
+
+  {
+    id: "PT004",
+    name: "Sophia Lee",
+    type: "Old",
+    status: "Completed",
+    appointment: "01:00 PM",
+    checkup: "Skin Checkup",
+    dob: "09 Oct 1992",
+    sex: "Female",
+    weight: "58 KG",
+    height: "5.4 ft",
+    history: ["Skin Infection"],
+  },
+
+  {
+    id: "PT005",
+    name: "Amit Patel",
+    type: "New",
+    status: "Upcoming",
+    appointment: "02:00 PM",
+    checkup: "General Checkup",
+    dob: "18 Dec 1997",
+    sex: "Male",
+    weight: "75 KG",
+    height: "6.0 ft",
+    history: ["Fever", "Cold"],
+  },
+
+  {
+    id: "PT006",
+    name: "Emma Watson",
+    type: "Old",
+    status: "Upcoming",
+    appointment: "03:30 PM",
+    checkup: "Neurology",
+    dob: "03 Mar 1990",
+    sex: "Female",
+    weight: "55 KG",
+    height: "5.6 ft",
+    history: ["Migraine"],
+  },
+
+  {
+    id: "PT007",
+    name: "David Miller",
+    type: "New",
+    status: "Completed",
+    appointment: "04:00 PM",
+    checkup: "Orthopedic",
+    dob: "11 Jul 1988",
+    sex: "Male",
+    weight: "80 KG",
+    height: "6.1 ft",
+    history: ["Knee Pain"],
+  },
+
+  {
+    id: "PT008",
+    name: "Priya Verma",
+    type: "Old",
+    status: "Upcoming",
+    appointment: "05:00 PM",
+    checkup: "Gynecology",
+    dob: "29 Nov 1996",
+    sex: "Female",
+    weight: "62 KG",
+    height: "5.3 ft",
+    history: ["Hormonal Issue"],
+  },
+];
+
+// ===============================
+// DUMMY DASHBOARD STATS
+// ===============================
+
+export const dummyStats = {
+  totalPatients: 2000,
+  todayPatients: 68,
+  appointments: 85,
+};

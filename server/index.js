@@ -16,6 +16,8 @@ import patientRoutes from "./src/routes/patient.route.js";
 import reportRoutes from "./src/routes/report.routes.js";
 import counterRoutes from "./src/routes/counter.routes.js";
 import multer from "multer";
+import http from "http";
+import { Server } from "socket.io";
 
 // Load env
 dotenv.config();
@@ -66,6 +68,99 @@ mongoose
     console.error("❌ DB connection error:", err);
   });
 
-app.listen(PORT, () => {
-  console.log(`🚀 Server running on http://localhost:${PORT}`);
+
+const server =
+  http.createServer(app);
+
+const io = new Server(server, {
+  cors: {
+    origin: "*",
+    methods: [
+      "GET",
+      "POST",
+    ],
+  },
+});
+
+// ======================================================
+// SOCKET CONNECTION
+// ======================================================
+
+io.on("connection", (socket) => {
+
+  console.log(
+    "🟢 User Connected:",
+    socket.id
+  );
+
+  // JOIN VIDEO ROOM
+  socket.on(
+    "join-room",
+    ({
+      roomId,
+      peerId,
+      user,
+    }) => {
+
+      socket.join(roomId);
+
+      console.log(
+        `${user} joined room ${roomId}`
+      );
+
+      // SEND TO OTHER USERS
+      socket.to(roomId).emit(
+        "user-connected",
+        {
+          peerId,
+          user,
+        }
+      );
+
+      // MESSAGE SUPPORT
+      socket.on(
+        "send-message",
+        (message) => {
+
+          io.to(roomId).emit(
+            "receive-message",
+            {
+              user,
+              message,
+            }
+          );
+        }
+      );
+
+      // DISCONNECT
+      socket.on(
+        "disconnect",
+        () => {
+
+          console.log(
+            "🔴 User Disconnected:",
+            socket.id
+          );
+
+          socket
+            .to(roomId)
+            .emit(
+              "user-disconnected",
+              peerId
+            );
+        }
+      );
+    }
+  );
+});
+
+// ======================================================
+// START SERVER
+// ======================================================
+
+server.listen(PORT, () => {
+
+  console.log(
+    `🚀 Server running on http://localhost:${PORT}`
+  );
 });

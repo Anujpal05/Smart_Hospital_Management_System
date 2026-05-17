@@ -30,7 +30,6 @@ const patientSchema = new mongoose.Schema(
     },
     maritalStatus: {
       type: String,
-      enum: ["Single", "Married", "Divorced", "Widowed"],
     },
     nationality: { type: String, default: "Indian" },
     profilePhoto:{

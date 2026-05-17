@@ -179,13 +179,20 @@ export const INITIAL_RECORD = {
     sampleNotes: "Fasting sample"
   },
   clinicalInformation: {
-    symptoms: "Fatigue, increased thirst",
-    diagnosis: "Suspected Diabetes",
-    clinicalHistory: "Family history of diabetes",
-    allergies: "None",
-    currentMedications: "Metformin",
-    pastMedicalHistory: "Hypertension",
-    doctorNotes: "Recommend follow-up in 1 month"
+    symptoms: 'Fatigue, increased thirst',
+    provisionalDiagnosis: 'Suspected Diabetes',
+     clinicalHistory: "Family history of diabetes",
+    allergies: 'None',
+    currentMedications: 'Metformin',
+    pastMedicalHistory: 'Hypertension',
+    familyHistory: '',
+    doctorNotes: 'Recommend follow-up in 1 month',
+    medicalAlerts: {
+      diabetic: false,
+      hypertension: false,
+      heartDisease: false,
+      asthma: false
+    }
   },
   billing: {
     invoiceNumber: "INV-2026-883",
@@ -197,7 +204,20 @@ export const INITIAL_RECORD = {
     balanceAmount: 0,
     paymentMode: "UPI",
     paymentStatus: "Paid"
-  }
+  },
+  patientStatus: {
+    patientType: 'OPD',
+    admissionStatus: 'Under Treatment',
+    priority: 'Normal'
+  },visitInfo: {
+    visitType: 'OPD',
+    chiefComplaint: '',
+    duration: '',
+    severity: 'Normal',
+    department: 'General Medicine',
+    consultingDoctor: '',
+    visitDate: new Date().toISOString().split('T')[0],
+  },
 };
 
 // --- Initial Data ---
@@ -260,3 +280,25 @@ export const patientData = {
       warning: "Your Blood Pressure (120/80) is perfect. No immediate action required."
     }
   };
+
+  export const INITIAL_PATIENT = {
+    name: "anuj mazari",
+    age: "41",
+    sex: "Male",
+    userId:"USER-00034",
+    labId: "02232160XXXX",
+    regDate: "20-Feb-2023 09:10",
+    collectedOn: "20-Feb-2023 08:53",
+    sampleType: "EDTA Blood, Serum",
+    reportName: "Complete Blood Count (CBC)",
+    refBy: "Dr. Michael Johnson",
+    passportNo: "N/A",
+    remarks: "RBC Morphology: Normochromic Normocytic. WBCs Series shows normal morphology. Platelets are adequate with normal morphology. Malarial parasite is not detected."
+  };
+  
+  export const INITIAL_TESTS = [
+    { id: 1, name: "Hemoglobin", result: "14.5", unit: "g/dL", ref: "13.0-16.5", flag: "" },
+    { id: 2, name: "Fasting Blood Sugar", result: "141.0", unit: "mg/dL", ref: "74-106", flag: "H" },
+    { id: 3, name: "HbA1c", result: "7.10", unit: "%", ref: "4.0-5.6", flag: "H" },
+    { id: 4, name: "Cholesterol", result: "189.0", unit: "mg/dL", ref: "< 200", flag: "" },
+  ];

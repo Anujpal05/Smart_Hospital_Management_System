@@ -1,338 +1,892 @@
-import React from 'react'
+import React, {
+  useEffect,
+  useMemo,
+  useState,
+  useCallback,
+} from "react";
+
 import { Tooltip } from "react-tooltip";
+
 import {
-  FaUserMd,
   FaUsers,
-  FaCalendarAlt,
-  FaClock,
-  FaCog,
-  FaSignOutAlt,
   FaCheck,
   FaTimes,
-  FaPhoneAlt,
   FaFileMedical,
   FaCommentDots,
   FaVideo,
+  FaSpinner,
 } from "react-icons/fa";
+
 import {
   PieChart,
   Pie,
   Cell,
   ResponsiveContainer,
-  Tooltip as Tool,
+  Tooltip as RechartTooltip,
 } from "recharts";
-import Calendar from '../Common/Calendar';
-import { Link } from 'react-router-dom';
-import { patients } from '../../../Data/patientdata';
-import Scheduler from './BigCalender';
-import QuickActions from './QuickActions';
-const chartData = [
-  { name: "New Patients", value: 35 },
-  { name: "Old Patients", value: 30 },
-  { name: "Total Patients", value: 35 },
+
+import { Link } from "react-router-dom";
+
+import { dummyPatients } from "./dummyData";
+
+import Scheduler from "./BigCalender";
+import QuickActions from "./QuickActions";
+
+// =========================================================
+// COLORS
+// =========================================================
+
+const COLORS = [
+  "#3B82F6",
+  "#FBBF24",
+  "#10B981",
 ];
 
-const COLORS = ["#3B82F6", "#FBBF24", "#1E40AF"];
+// =========================================================
+// MAIN COMPONENT
+// =========================================================
 
 const DashBoardMain = () => {
-	const nextPatient =
-  patients.find((p) => p.status === "On Going") ||
-  patients.find((p) => p.status === "Upcoming");
-  return (
-	<>
-					
-					{/* ===== TOP CARDS ===== */}
-					<div className="grid grid-cols-3 gap-6 mt-6">
-						<StatCard title="Total Patient" value="2000+" />
-						<StatCard title="Today Patient" value="068" />
-						<StatCard title="Today Appointments" value="085" />
-					</div>
+  const [patients, setPatients] = useState([]);
 
-					{/* ===== MIDDLE SECTION ===== */}
-					<div className="grid grid-cols-3 gap-6 mt-8">
+  const [loading, setLoading] =
+    useState(true);
 
-						{/* Chart */}
-						<div className="bg-white p-6 rounded-2xl shadow-md">
-						<h3 className="font-semibold mb-4">
-							Patients Summary March 2026
-						</h3>
+  const [error, setError] =
+    useState("");
 
-						<div className="h-56">
-							<ResponsiveContainer>
-							<PieChart>
-								<Pie
-								data={chartData}
-								innerRadius={60}
-								outerRadius={90}
-								dataKey="value"
-								paddingAngle={3}
-								>
-								{chartData.map((entry, index) => (
-									<Cell key={index} fill={COLORS[index]} />
-								))}
-								</Pie>
-								<Tool/>
-							</PieChart>
-							</ResponsiveContainer>
-						</div>
+  const [
+    appointmentRequests,
+    setAppointmentRequests,
+  ] = useState([]);
 
-						{/* Legend */}
-						<div className="mt-4 space-y-2 text-sm">
-							{chartData.map((item, i) => (
-							<div key={i} className="flex items-center space-x-2">
-								<span
-								className="w-3 h-3 rounded-full"
-								style={{ background: COLORS[i] }}
-								></span>
-								<span>{item.name}</span>
-							</div>
-							))}
-						</div>
-						</div>
+  // =========================================================
+  // FETCH DATA
+  // =========================================================
 
-						{/* Today Appointment */}
-						<div className="bg-white p-6 rounded-2xl shadow-md">
-						<h3 className="font-semibold mb-4">Today Appointment</h3>
+  const fetchDashboardData =
+    useCallback(async () => {
+      try {
+        setLoading(true);
 
-						{/* scroll container */}
-						<div className="space-y-4 max-h-73.75 overflow-y-auto pr-2">
-							{patients.map((p) => (
-							<Appointment
-								key={p.id}
-								name={p.name}
-								time={p.status === "On Going" ? "On Going" : p.appointment}
-							/>
-							))}
-						</div>
-						</div>
+        await new Promise((resolve) =>
+          setTimeout(resolve, 1000)
+        );
 
-						 {/* NEXT PATIENT */}
-						<div className="bg-white shadow-md p-6 rounded-2xl">
+        setPatients(dummyPatients);
 
-						<h3 className="text-gray-700 font-semibold mb-4">
-							Next Patient Details
-						</h3>
+        setAppointmentRequests(
+          dummyPatients.slice(0, 5)
+        );
+      } catch (err) {
+        console.error(err);
 
-						{/* Profile */}
-						<div className="flex items-center justify-between mb-4">
+        setError(
+          "Something went wrong while loading dashboard."
+        );
+      } finally {
+        setLoading(false);
+      }
+    }, []);
 
-							<div className="flex items-center gap-3">
-							<div className="w-12 h-12 bg-blue-200 rounded-full flex items-center justify-center font-bold text-blue-700">
-								{nextPatient.name.slice(0,2).toUpperCase()}
-							</div>
+  useEffect(() => {
+    fetchDashboardData();
+  }, [fetchDashboardData]);
 
-							<div>
-								<p className="font-semibold text-gray-700">
-								{nextPatient.name}
-								</p>
-								<p className="text-sm text-gray-500">
-								{nextPatient.checkup}
-								</p>
-							</div>
-							</div>
+  // =========================================================
+  // NEXT PATIENT
+  // =========================================================
 
-							<div className="text-right">
-							<p className="text-sm text-gray-500">Patient ID</p>
-							<p className="text-sm font-medium">{nextPatient.id}</p>
-							</div>
+  const nextPatient = useMemo(() => {
+    const sortedPatients = [
+      ...patients,
+    ].sort(
+      (a, b) =>
+        new Date(a.date).getTime() -
+        new Date(b.date).getTime()
+    );
 
-						</div>
+    return (
+      sortedPatients.find(
+        (p) =>
+          p.status === "Upcoming" ||
+          p.status === "On Going"
+      ) || null
+    );
+  }, [patients]);
 
+  // =========================================================
+  // CHART DATA
+  // =========================================================
 
-						{/* Info Grid */}
-						<div className="grid grid-cols-2 gap-y-4 text-sm text-gray-600">
+  const chartData = useMemo(() => {
+    const newPatients =
+      patients.filter(
+        (p) => p.type === "New"
+      ).length;
 
-							<Info label="D.O.B" value={nextPatient.dob} />
-							<Info label="Sex" value={nextPatient.sex} />
-							<Info label="Weight" value={nextPatient.weight} />
-							<Info label="Height" value={nextPatient.height} />
+    const oldPatients =
+      patients.filter(
+        (p) => p.type === "Old"
+      ).length;
 
-						</div>
+    const ongoingPatients =
+      patients.filter(
+        (p) => p.status === "On Going"
+      ).length;
 
+    return [
+      {
+        name: "New Patients",
+        value: newPatients,
+      },
 
-						{/* Patient History */}
-						<div className="mt-5">
-							<p className="text-sm text-gray-500 mb-2">
-							Patient History
-							</p>
+      {
+        name: "Old Patients",
+        value: oldPatients,
+      },
 
-							<div className="flex gap-2 flex-wrap">
-							{nextPatient.history.map((item, i) => (
-								<span
-								key={i}
-								className="bg-blue-100 text-blue-700 text-xs px-3 py-1 rounded-md"
-								>
-								{item}
-								</span>
-							))}
-							</div>
+      {
+        name: "Ongoing",
+        value: ongoingPatients,
+      },
+    ];
+  }, [patients]);
 
-							<div className="flex gap-3 mt-6">
+  // =========================================================
+  // REVIEW DATA
+  // =========================================================
 
-								{/* Video Call */}
-								<Link
-								    to={"/video-call/123456"}
-									data-tooltip-id="videoTip"
-									data-tooltip-content="Video Call"
-									className="bg-blue-600 cursor-pointer text-white p-3 rounded-lg hover:bg-blue-700"
-								>
-									<FaVideo />
-								</Link>
-								<Tooltip id="videoTip" place="bottom" />
+  const reviewData = useMemo(() => {
+    const total =
+      patients.length || 1;
 
+    const completed = Math.round(
+      (patients.filter(
+        (p) =>
+          p.status === "Completed"
+      ).length /
+        total) *
+        100
+    );
 
+    const ongoing = Math.round(
+      (patients.filter(
+        (p) =>
+          p.status === "On Going"
+      ).length /
+        total) *
+        100
+    );
 
-								{/* Document */}
-								<button
-									data-tooltip-id="docTip"
-									data-tooltip-content="Document"
-									className="bg-gray-200 cursor-pointer p-3 rounded-lg hover:bg-gray-300"
-								>
-									<FaFileMedical />
-								</button>
-								<Tooltip id="docTip" place="bottom" />
+    const upcoming = Math.round(
+      (patients.filter(
+        (p) =>
+          p.status === "Upcoming"
+      ).length /
+        total) *
+        100
+    );
 
+    return [
+      {
+        label: "Completed",
+        percent: completed,
+      },
 
+      {
+        label: "On Going",
+        percent: ongoing,
+      },
 
-								{/* Chat */}
-								<button
-									data-tooltip-id="chatTip"
-									data-tooltip-content="Chat"
-									className="bg-gray-200 cursor-pointer p-3 rounded-lg hover:bg-gray-300"
-								>
-									<FaCommentDots />
-								</button>
-								<Tooltip id="chatTip" place="bottom" />
+      {
+        label: "Upcoming",
+        percent: upcoming,
+      },
+    ];
+  }, [patients]);
 
-								</div>
-						</div>
+  // =========================================================
+  // STATS
+  // =========================================================
 
-						</div>	
-					</div>
+  const statCards = useMemo(
+    () => [
+      {
+        title: "Total Patients",
+        value: patients.length,
+      },
 
-					{/* ===== BOTTOM SECTION ===== */}
-					<div className="grid grid-cols-3 gap-6 mt-8">
+      {
+        title: "Upcoming",
+        value: patients.filter(
+          (p) =>
+            p.status === "Upcoming"
+        ).length,
+      },
 
-						{/* Patient Review */}
-						<div className="bg-white p-6 rounded-2xl shadow-md">
-						<h3 className="font-semibold mb-4">Patients Review</h3>
-						<Progress label="Excellent" percent={80} />
-						<Progress label="Great" percent={60} />
-						<Progress label="Good" percent={40} />
-						<Progress label="Average" percent={25} />
-						</div>
+      {
+        title: "Completed",
+        value: patients.filter(
+          (p) =>
+            p.status === "Completed"
+        ).length,
+      },
+    ],
+    [patients]
+  );
 
-						{/* Appointment Request */}
-						<div className="bg-white p-6 rounded-2xl shadow-md">
-						<h3 className="font-semibold mb-4">Appointment Request</h3>
+  // =========================================================
+  // ACCEPT REQUEST
+  // =========================================================
 
-						<Request name="Maria Sarafat" />
-						<Request name="Jhon Deo" />
-						</div>
+  const handleAcceptRequest = (
+    id
+  ) => {
+    setPatients((prev) =>
+      prev.map((patient) =>
+        patient.id === id
+          ? {
+              ...patient,
+              status: "Upcoming",
+            }
+          : patient
+      )
+    );
 
-						{/* Calendar */}
-					   {/* <Calendar /> */}
-					   <QuickActions />
+    setAppointmentRequests((prev) =>
+      prev.filter(
+        (p) => p.id !== id
+      )
+    );
+  };
 
-					</div>
-					<Scheduler />
-					
-					</>
-  )
-}
+  // =========================================================
+  // REJECT REQUEST
+  // =========================================================
 
+  const handleRejectRequest = (
+    id
+  ) => {
+    setAppointmentRequests((prev) =>
+      prev.filter(
+        (patient) =>
+          patient.id !== id
+      )
+    );
+  };
 
+  // =========================================================
+  // LOADING
+  // =========================================================
 
-function StatCard({ title, value }) {
-  return (
-    <div className="bg-[#eef2ff] p-6 rounded-2xl flex items-center justify-between">
-      <div>
-        <p className="text-sm text-gray-500">{title}</p>
-        <h2 className="text-2xl font-bold text-gray-800 mt-1">{value}</h2>
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <FaSpinner className="animate-spin text-4xl text-blue-600" />
       </div>
-      <div className="w-12 h-12 rounded-full border-4 border-blue-600 flex items-center justify-center text-blue-600">
+    );
+  }
+
+  // =========================================================
+  // ERROR
+  // =========================================================
+
+  if (error) {
+    return (
+      <div className="text-center py-10 text-red-500 text-lg">
+        {error}
+      </div>
+    );
+  }
+
+  // =========================================================
+  // UI
+  // =========================================================
+
+  return (
+    <div className="space-y-8 p-4 md:p-6 bg-[#f8fafc] min-h-screen">
+
+      {/* ========================================================= */}
+      {/* STATS */}
+      {/* ========================================================= */}
+
+      <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-6">
+
+        {statCards.map((item) => (
+          <StatCard
+            key={item.title}
+            title={item.title}
+            value={item.value}
+          />
+        ))}
+      </div>
+
+      {/* ========================================================= */}
+      {/* MIDDLE SECTION */}
+      {/* ========================================================= */}
+
+      <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+
+        {/* ========================================================= */}
+        {/* SUMMARY */}
+        {/* ========================================================= */}
+
+        <Card title="Patients Summary">
+
+          <div className="h-72">
+
+            <ResponsiveContainer
+              width="100%"
+              height="100%"
+            >
+              <PieChart>
+
+                <Pie
+                  data={chartData}
+                  innerRadius={70}
+                  outerRadius={100}
+                  dataKey="value"
+                  paddingAngle={3}
+                >
+                  {chartData.map(
+                    (_, index) => (
+                      <Cell
+                        key={index}
+                        fill={
+                          COLORS[index]
+                        }
+                      />
+                    )
+                  )}
+                </Pie>
+
+                <RechartTooltip />
+              </PieChart>
+            </ResponsiveContainer>
+          </div>
+
+          <div className="mt-4 space-y-2">
+
+            {chartData.map(
+              (item, index) => (
+                <LegendItem
+                  key={item.name}
+                  color={
+                    COLORS[index]
+                  }
+                  label={`${item.name}: ${item.value}`}
+                />
+              )
+            )}
+          </div>
+        </Card>
+
+        {/* ========================================================= */}
+        {/* APPOINTMENTS */}
+        {/* ========================================================= */}
+
+        <Card title="Today's Appointments">
+
+          <div className="space-y-4 max-h-[400px] overflow-y-auto pr-2">
+
+            {patients.length ===
+            0 ? (
+              <EmptyState text="No appointments found." />
+            ) : (
+              patients.map(
+                (patient) => (
+                  <AppointmentCard
+                    key={
+                      patient.id
+                    }
+                    patient={
+                      patient
+                    }
+                  />
+                )
+              )
+            )}
+          </div>
+        </Card>
+
+        {/* ========================================================= */}
+        {/* NEXT PATIENT */}
+        {/* ========================================================= */}
+
+        <Card title="Next Patient Details">
+
+          {!nextPatient ? (
+            <EmptyState text="No patient available." />
+          ) : (
+            <>
+              {/* STATUS */}
+
+              <span
+                className={`px-3 py-1 rounded-full text-xs font-semibold w-fit ${
+                  nextPatient.status ===
+                  "Completed"
+                    ? "bg-green-100 text-green-700"
+                    : nextPatient.status ===
+                      "On Going"
+                    ? "bg-blue-100 text-blue-700"
+                    : "bg-yellow-100 text-yellow-700"
+                }`}
+              >
+                {
+                  nextPatient.status
+                }
+              </span>
+
+              {/* HEADER */}
+
+              <div className="my-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+
+                <div className="flex items-center gap-3">
+
+                  <Avatar
+                    text={nextPatient.name
+                      ?.slice(
+                        0,
+                        2
+                      )
+                      .toUpperCase()}
+                  />
+
+                  <div>
+                    <h2 className="font-semibold text-gray-800">
+                      {
+                        nextPatient.name
+                      }
+                    </h2>
+
+                    <p className="text-sm text-gray-500">
+                      {
+                        nextPatient.checkup
+                      }
+                    </p>
+                  </div>
+                </div>
+
+                <div>
+                  <p className="text-sm text-gray-500">
+                    Patient ID
+                  </p>
+
+                  <p className="font-semibold">
+                    {
+                      nextPatient.id
+                    }
+                  </p>
+                </div>
+              </div>
+
+              {/* INFO */}
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-6">
+
+                <Info
+                  label="DOB"
+                  value={
+                    nextPatient.dob
+                  }
+                />
+
+                <Info
+                  label="Gender"
+                  value={
+                    nextPatient.sex
+                  }
+                />
+
+                <Info
+                  label="Weight"
+                  value={
+                    nextPatient.weight
+                  }
+                />
+
+                <Info
+                  label="Height"
+                  value={
+                    nextPatient.height
+                  }
+                />
+              </div>
+
+              {/* HISTORY */}
+
+              <div className="mt-6">
+
+                <p className="text-sm text-gray-500 mb-2">
+                  Patient
+                  History
+                </p>
+
+                <div className="flex flex-wrap gap-2">
+
+                  {nextPatient.history?.map(
+                    (
+                      item,
+                      index
+                    ) => (
+                      <span
+                        key={
+                          index
+                        }
+                        className="bg-blue-100 text-blue-700 text-xs px-3 py-1 rounded-lg"
+                      >
+                        {item}
+                      </span>
+                    )
+                  )}
+                </div>
+              </div>
+
+              {/* ACTIONS */}
+
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 mt-6">
+
+                <Link
+                  to={`/video-call/${nextPatient.id}`}
+                  data-tooltip-id="video"
+                  data-tooltip-content="Video Call"
+                  className="flex items-center justify-center py-3 rounded-xl bg-blue-600 text-white hover:bg-blue-700 transition"
+                >
+                  <FaVideo />
+                </Link>
+
+                <Tooltip id="video" />
+
+                <button className="py-3 rounded-xl bg-gray-100 hover:bg-gray-200 transition flex items-center justify-center">
+
+                  <FaFileMedical />
+                </button>
+
+                <button className="py-3 rounded-xl bg-gray-100 hover:bg-gray-200 transition flex items-center justify-center">
+
+                  <FaCommentDots />
+                </button>
+              </div>
+            </>
+          )}
+        </Card>
+      </div>
+
+      {/* ========================================================= */}
+      {/* BOTTOM SECTION */}
+      {/* ========================================================= */}
+
+      <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">
+
+        {/* ========================================================= */}
+        {/* REVIEWS */}
+        {/* ========================================================= */}
+
+        <Card title="Patient Reviews">
+
+          {reviewData.map(
+            (item) => (
+              <ProgressBar
+                key={item.label}
+                label={
+                  item.label
+                }
+                percent={
+                  item.percent
+                }
+              />
+            )
+          )}
+        </Card>
+
+        {/* ========================================================= */}
+        {/* REQUESTS */}
+        {/* ========================================================= */}
+
+        <Card title="Appointment Requests">
+
+          {appointmentRequests.length ===
+          0 ? (
+            <EmptyState text="No appointment requests." />
+          ) : (
+            appointmentRequests.map(
+              (patient) => (
+                <RequestCard
+                  key={
+                    patient.id
+                  }
+                  patient={
+                    patient
+                  }
+                  onAccept={
+                    handleAcceptRequest
+                  }
+                  onReject={
+                    handleRejectRequest
+                  }
+                />
+              )
+            )
+          )}
+        </Card>
+
+        {/* ========================================================= */}
+        {/* QUICK ACTIONS */}
+        {/* ========================================================= */}
+
+        <QuickActions />
+      </div>
+
+      {/* ========================================================= */}
+      {/* SCHEDULER */}
+      {/* ========================================================= */}
+
+      <Scheduler />
+    </div>
+  );
+};
+
+// =========================================================
+// CARD
+// =========================================================
+
+const Card = React.memo(
+  ({ title, children }) => (
+    <div className="bg-white rounded-2xl shadow-sm p-5 md:p-6">
+      <h2 className="font-semibold text-gray-700 mb-5 text-lg">
+        {title}
+      </h2>
+
+      {children}
+    </div>
+  )
+);
+
+// =========================================================
+// STAT CARD
+// =========================================================
+
+const StatCard = React.memo(
+  ({ title, value }) => (
+    <div className="bg-gradient-to-r from-blue-50 to-indigo-50 p-6 rounded-2xl shadow-sm flex items-center justify-between">
+
+      <div>
+        <p className="text-sm text-gray-500">
+          {title}
+        </p>
+
+        <h2 className="text-3xl font-bold text-gray-800 mt-2">
+          {value}
+        </h2>
+      </div>
+
+      <div className="w-14 h-14 rounded-full border-4 border-blue-600 flex items-center justify-center text-blue-600 text-xl">
+
         <FaUsers />
       </div>
     </div>
-  );
-}
+  )
+);
 
-function Appointment({ name, time }) {
-  return (
-    <div className="flex justify-between items-center bg-gray-50 p-3 rounded-xl">
-      <div className="flex items-center space-x-3">
-        <div className="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center font-semibold text-blue-600">
-          {name.charAt(0)}
+// =========================================================
+// APPOINTMENT CARD
+// =========================================================
+
+const AppointmentCard =
+  React.memo(
+    ({ patient }) => (
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 bg-gray-50 p-4 rounded-xl hover:shadow transition">
+
+        <div className="flex items-center gap-3">
+
+          <Avatar
+            text={patient.name?.charAt(
+              0
+            )}
+          />
+
+          <div>
+            <h3 className="font-medium text-gray-700">
+              {patient.name}
+            </h3>
+
+            <p className="text-sm text-gray-500">
+              {patient.checkup ||
+                "Health Checkup"}
+            </p>
+          </div>
         </div>
+
+        <span className="bg-blue-100 text-blue-700 px-3 py-1 rounded-lg text-xs font-medium w-fit">
+
+          {patient.status ===
+          "On Going"
+            ? "On Going"
+            : patient.appointment}
+        </span>
+      </div>
+    )
+  );
+
+// =========================================================
+// REQUEST CARD
+// =========================================================
+
+const RequestCard = React.memo(
+  ({
+    patient,
+    onAccept,
+    onReject,
+  }) => (
+    <div className="flex items-center justify-between mb-4 bg-gray-50 p-4 rounded-xl hover:shadow-sm transition">
+
+      <div className="flex items-center gap-3">
+
+        <Avatar
+          text={patient.name?.charAt(
+            0
+          )}
+        />
+
         <div>
-          <p className="font-medium">{name}</p>
-          <p className="text-xs text-gray-500">Health Checkup</p>
-        </div>
-      </div>
-      <span className="text-xs bg-blue-100 text-blue-600 px-3 py-1 rounded-lg">
-        {time}
-      </span>
-    </div>
-  );
-}
+          <p className="font-medium text-gray-700">
+            {patient.name}
+          </p>
 
-function Info({ label, value }) {
-  return (
-    <div>
-      <p className="text-gray-400">{label}</p>
-      <p className="font-medium">{value}</p>
-    </div>
-  );
-}
-
-function Progress({ label, percent }) {
-  return (
-    <div className="mb-4">
-      <div className="flex justify-between text-sm mb-1">
-        <span>{label}</span>
-        <span>{percent}%</span>
-      </div>
-      <div className="w-full bg-gray-200 h-2 rounded-full">
-        <div
-          className="bg-blue-600 h-2 rounded-full"
-          style={{ width: `${percent}%` }}
-        ></div>
-      </div>
-    </div>
-  );
-}
-
-function Request({ name }) {
-  return (
-    <div className="flex justify-between items-center mb-4">
-      <div className="flex items-center space-x-3">
-        <div className="w-10 h-10 bg-gray-200 rounded-full flex items-center justify-center">
-          {name.charAt(0)}
-        </div>
-        <div>
-          <p className="font-medium">{name}</p>
-          <p className="text-xs text-gray-500">Cold</p>
+          <p className="text-xs text-gray-500">
+            {patient.checkup}
+          </p>
         </div>
       </div>
 
-      <div className="flex space-x-2">
-        <button className="bg-green-100 text-green-600 p-2 rounded-lg">
+      <div className="flex gap-2">
+
+        <button
+          onClick={() =>
+            onAccept(
+              patient.id
+            )
+          }
+          className="p-2 rounded-lg bg-green-100 text-green-600 hover:bg-green-200 transition"
+        >
           <FaCheck />
         </button>
-        <button className="bg-red-100 text-red-600 p-2 rounded-lg">
+
+        <button
+          onClick={() =>
+            onReject(
+              patient.id
+            )
+          }
+          className="p-2 rounded-lg bg-red-100 text-red-600 hover:bg-red-200 transition"
+        >
           <FaTimes />
         </button>
       </div>
     </div>
-  );
-}
+  )
+);
 
-function ActionBtn({ icon }) {
-  return (
-    <button className="bg-blue-100 text-blue-600 p-3 rounded-xl hover:bg-blue-200 transition">
-      {icon}
-    </button>
-  );
-}
+// =========================================================
+// PROGRESS BAR
+// =========================================================
 
-export default DashBoardMain
+const ProgressBar = ({
+  label,
+  percent,
+}) => (
+  <div className="mb-5">
+
+    <div className="flex justify-between mb-1 text-sm">
+
+      <span>{label}</span>
+
+      <span>{percent}%</span>
+    </div>
+
+    <div className="w-full h-2 bg-gray-200 rounded-full overflow-hidden">
+
+      <div
+        className="h-full bg-blue-600 rounded-full transition-all duration-500"
+        style={{
+          width: `${percent}%`,
+        }}
+      />
+    </div>
+  </div>
+);
+
+// =========================================================
+// AVATAR
+// =========================================================
+
+const Avatar = ({ text }) => (
+  <div className="w-11 h-11 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center font-semibold">
+
+    {text}
+  </div>
+);
+
+// =========================================================
+// INFO
+// =========================================================
+
+const Info = ({
+  label,
+  value,
+}) => (
+  <div>
+    <p className="text-gray-400 text-sm">
+      {label}
+    </p>
+
+    <p className="font-medium text-gray-700">
+      {value || "-"}
+    </p>
+  </div>
+);
+
+// =========================================================
+// LEGEND
+// =========================================================
+
+const LegendItem = ({
+  color,
+  label,
+}) => (
+  <div className="flex items-center gap-2 text-sm">
+
+    <div
+      className="w-3 h-3 rounded-full"
+      style={{
+        backgroundColor: color,
+      }}
+    />
+
+    <span>{label}</span>
+  </div>
+);
+
+// =========================================================
+// EMPTY STATE
+// =========================================================
+
+const EmptyState = ({
+  text,
+}) => (
+  <div className="flex flex-col items-center justify-center py-14 text-center">
+
+    <img
+      src="https://cdn-icons-png.flaticon.com/512/6134/6134065.png"
+      alt="empty"
+      className="w-32 mb-4 opacity-70"
+    />
+
+    <p className="text-gray-400">
+      {text}
+    </p>
+  </div>
+);
+
+export default DashBoardMain;

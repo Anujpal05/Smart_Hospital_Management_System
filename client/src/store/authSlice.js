@@ -2,7 +2,7 @@ import { createSlice } from "@reduxjs/toolkit";
 import toast from "react-hot-toast";
 
 const initialState = {
-  isLogin: localStorage.getItem("userId") !== null ? true : false,
+  isLogin: localStorage.getItem("user") !== null ? true : false,
 };
 
 const authSlice = createSlice({
@@ -11,7 +11,6 @@ const authSlice = createSlice({
   reducers: {
     login(state, action) {
       state.isLogin = true;
-      toast.success("Login successful!");
     },
     logout(state) {
       state.isLogin = false;

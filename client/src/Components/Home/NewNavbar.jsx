@@ -1,7 +1,32 @@
 import React from "react";
 import { FaBell, FaSearch } from "react-icons/fa";
+import { useSelector } from "react-redux";
 
 export default function DashboardNavbar() {
+  const {user} = useSelector((state) => state.auth);
+  const getInitials = (name) => {
+  if (!name) return "JD";
+
+  const words = name.trim().split(" ");
+  if (words.length === 1) return words[0][0].toUpperCase();
+
+  return (
+    words[0][0] + words[words.length - 1][0]
+  ).toUpperCase();
+};
+
+const getBgColor = (name) => {
+  const colors = [
+    "bg-purple-500",
+    "bg-blue-500",
+    "bg-green-500",
+    "bg-pink-500",
+    "bg-indigo-500",
+  ];
+
+  let index = name ? name.length % colors.length : 0;
+  return colors[index];
+};
   return (
     <div className="w-full bg-white shadow-sm px-8 py-4 flex items-center justify-between">
 
@@ -35,18 +60,18 @@ export default function DashboardNavbar() {
 
         {/* USER PROFILE */}
         <div className="flex items-center gap-3 cursor-pointer">
+        <span className="text-gray-700 font-medium">
+          {user ? user?.name : "John Doe"}
+        </span>
 
-          <span className="text-gray-700 font-medium">
-            John Doe
-          </span>
-
-          <img
-            src="https://i.pravatar.cc/40"
-            alt="profile"
-            className="w-10 h-10 rounded-full object-cover"
-          />
-
+        <div
+          className={`w-10 h-10 flex items-center justify-center rounded-full text-white font-semibold ${getBgColor(
+            user?.name || "John Doe"
+          )}`}
+        >
+          {getInitials(user?.name || "John Doe")}
         </div>
+      </div>
 
       </div>
 

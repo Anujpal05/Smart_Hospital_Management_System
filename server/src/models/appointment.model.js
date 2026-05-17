@@ -1,11 +1,12 @@
 import mongoose from "mongoose";
 import Doctor from "./doctor.model.js";
 import Patient from "./patient.model.js";
+import User from "./user.model.js"
 
 const appointmentSchema = new mongoose.Schema(
   {
     patient: { type: mongoose.Schema.Types.ObjectId, ref: "Patient" },
-    doctor: { type: mongoose.Schema.Types.ObjectId, ref: "Doctor" },
+    doctor: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
     user: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
@@ -18,6 +19,16 @@ const appointmentSchema = new mongoose.Schema(
       type: String,
       enum: ["PENDING", "CONFIRMED", "CANCELLED", "COMPLETED"],
       default: "PENDING",
+    },
+    place:{
+      type: String,
+      enum: ["ONLINE", "OFFLINE"],
+      default: "OFFLINE",
+    },
+    priority: {
+      type: String,
+      enum:["NORMAL", "URGENT" ,"SURGERY"], 
+      default: "NORMAL",
     },
     reason: String,
   },

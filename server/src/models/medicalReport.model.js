@@ -38,7 +38,22 @@ const clinicalInfoSchema = new mongoose.Schema({
   pastMedicalHistory: String,
   doctorNotes: String,
 });
-
+const fileSchema = new mongoose.Schema({
+  url: {
+    type: String,
+    required: true, 
+  },
+  publicId: {
+    type: String, 
+  },
+  fileType: {
+    type: String,
+    enum: ["pdf", "image"],
+    required: true,
+  },
+  fileName: String,
+  fileSize: String, 
+});
 // Main Medical Report Schema
 const medicalReportSchema = new mongoose.Schema(
   {
@@ -69,6 +84,7 @@ const medicalReportSchema = new mongoose.Schema(
     clinicalInformation: [clinicalInfoSchema],
 
     doctorReferral: [doctorReferralSchema],
+    files: [fileSchema],
 
     reportStatus: {
       type: String,

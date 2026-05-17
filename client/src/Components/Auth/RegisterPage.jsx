@@ -41,21 +41,33 @@ const RegisterPage = () => {
     try {
       e.preventDefault();
       setIsLoading(true);
-      const payload = {
-        name: formData.fullName,
-        email: formData.email,
-        password: formData.password,
-        confirmPassword: formData.confirmPassword,
-      };
+      // const payload = {
+      //   name: formData.fullName,
+      //   email: formData.email,
+      //   password: formData.password,
+      //   confirmPassword: formData.confirmPassword,
+      // };
 
-      // Simulate API Call
-      console.log("API Request:", payload);
-      const res = await axios.post(
-        `http://localhost:5000/api/auth/register`,
-        payload,
-      );
-      toast.success(res.data.message || "User created successfully!");
-      navigate("/login");
+      // // Simulate API Call
+      // console.log("API Request:", payload);
+      // const res = await axios.post(
+      //   `http://localhost:5000/api/auth/register`,
+      //   payload,
+      // );
+      // toast.success(res.data.message || "User created successfully!");
+      // navigate("/login");
+
+      const response = await dispatch(
+          signupAction(
+            {
+              name: formData.fullName,
+              email: formData.email,
+              password: formData.password,
+            },
+            navigate,
+          ),
+        );
+        console.log("action response:", response);
     } catch (error) {
       console.error("Authentication error:", error);
       toast.error(

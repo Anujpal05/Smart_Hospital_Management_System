@@ -1,0 +1,420 @@
+[{
+  "_id": {
+    "$oid": "69d7ab5ac58eb8fb24f54b30"
+  },
+  "userId": {
+    "$oid": "69d7ab5ac58eb8fb24f54b28"
+  },
+  "profilePhoto": {
+    "url": "https://res.cloudinary.com/dcfy1v0ab/image/upload/v1772214254/Rectangle_20_i1gcfr.png"
+  },
+  "biography": "Experienced neurologist with focus on brain disorders.",
+  "age": 45,
+  "gender": "Male",
+  "dateOfBirth": {
+    "$date": "1980-05-12T00:00:00.000Z"
+  },
+  "city": "Mumbai",
+  "state": "Maharashtra",
+  "specialization": [
+    "Neurology",
+    "Cardiovascular"
+  ],
+  "experience": 18,
+  "qualification": "MBBS, MD Neurology",
+  "hospitalName": "Apollo Hospital",
+  "licenseNumber": "LIC10001",
+  "consultationFee": 800,
+  "availableDays": [],
+  "availableTime": {
+    "start": "09:00 AM",
+    "end": "06:00 PM"
+  },
+  "assignedPatients": [],
+  "createdAt": {
+    "$date": "2026-04-09T13:36:26.879Z"
+  },
+  "updatedAt": {
+    "$date": "2026-04-09T13:36:26.879Z"
+  },
+  "doctorId": "DOC-00023",
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "69d7ab5ac58eb8fb24f54b37"
+  },
+  "userId": {
+    "$oid": "69d7ab5ac58eb8fb24f54b33"
+  },
+  "profilePhoto": {
+    "url": "https://res.cloudinary.com/dcfy1v0ab/image/upload/v1772214254/Rectangle_20_1_iqcqu9.png"
+  },
+  "biography": "Orthopedic surgeon specializing in bone injuries.",
+  "age": 38,
+  "gender": "Female",
+  "dateOfBirth": {
+    "$date": "1987-09-21T00:00:00.000Z"
+  },
+  "city": "Delhi",
+  "state": "Delhi",
+  "specialization": [
+    "Bones",
+    "Physiotherapy"
+  ],
+  "experience": 12,
+  "qualification": "MBBS, MS Orthopedics",
+  "hospitalName": "Fortis Hospital",
+  "licenseNumber": "LIC10002",
+  "consultationFee": 700,
+  "availableDays": [],
+  "availableTime": {
+    "start": "09:00 AM",
+    "end": "06:00 PM"
+  },
+  "assignedPatients": [],
+  "createdAt": {
+    "$date": "2026-04-09T13:36:26.950Z"
+  },
+  "updatedAt": {
+    "$date": "2026-04-09T13:36:26.950Z"
+  },
+  "doctorId": "DOC-00024",
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "69d7ab5bc58eb8fb24f54b3e"
+  },
+  "userId": {
+    "$oid": "69d7ab5bc58eb8fb24f54b3a"
+  },
+  "profilePhoto": {
+    "url": "https://res.cloudinary.com/dcfy1v0ab/image/upload/v1772214254/Rectangle_20_2_asahdp.png"
+  },
+  "biography": "Cancer specialist with modern treatment techniques.",
+  "age": 50,
+  "gender": "Male",
+  "dateOfBirth": {
+    "$date": "1975-02-11T00:00:00.000Z"
+  },
+  "city": "Ahmedabad",
+  "state": "Gujarat",
+  "specialization": [
+    "Oncology",
+    "General Medicine"
+  ],
+  "experience": 22,
+  "qualification": "MBBS, DM Oncology",
+  "hospitalName": "Zydus Hospital",
+  "licenseNumber": "LIC10003",
+  "consultationFee": 1000,
+  "availableDays": [],
+  "availableTime": {
+    "start": "09:00 AM",
+    "end": "06:00 PM"
+  },
+  "assignedPatients": [],
+  "createdAt": {
+    "$date": "2026-04-09T13:36:27.020Z"
+  },
+  "updatedAt": {
+    "$date": "2026-04-09T13:36:27.020Z"
+  },
+  "doctorId": "DOC-00025",
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "69d7ab5bc58eb8fb24f54b45"
+  },
+  "userId": {
+    "$oid": "69d7ab5bc58eb8fb24f54b41"
+  },
+  "profilePhoto": {
+    "url": "https://res.cloudinary.com/dcfy1v0ab/image/upload/v1772214254/Rectangle_20_i1gcfr.png"
+  },
+  "biography": "ENT specialist handling ear, nose, and throat disorders.",
+  "age": 42,
+  "gender": "Male",
+  "dateOfBirth": {
+    "$date": "1983-07-15T00:00:00.000Z"
+  },
+  "city": "Pune",
+  "state": "Maharashtra",
+  "specialization": [
+    "Otorhinolaryngology",
+    "Pulmonology"
+  ],
+  "experience": 15,
+  "qualification": "MBBS, MS ENT",
+  "hospitalName": "Ruby Hall Clinic",
+  "licenseNumber": "LIC10004",
+  "consultationFee": 600,
+  "availableDays": [],
+  "availableTime": {
+    "start": "09:00 AM",
+    "end": "06:00 PM"
+  },
+  "assignedPatients": [],
+  "createdAt": {
+    "$date": "2026-04-09T13:36:27.087Z"
+  },
+  "updatedAt": {
+    "$date": "2026-04-09T13:36:27.087Z"
+  },
+  "doctorId": "DOC-00026",
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "69d7ab5bc58eb8fb24f54b4c"
+  },
+  "userId": {
+    "$oid": "69d7ab5bc58eb8fb24f54b48"
+  },
+  "profilePhoto": {
+    "url": "https://res.cloudinary.com/dcfy1v0ab/image/upload/v1772214254/Rectangle_20_1_iqcqu9.png"
+  },
+  "biography": "Eye specialist focusing on vision correction.",
+  "age": 36,
+  "gender": "Female",
+  "dateOfBirth": {
+    "$date": "1989-01-10T00:00:00.000Z"
+  },
+  "city": "Bangalore",
+  "state": "Karnataka",
+  "specialization": [
+    "Ophthalmology",
+    "Dermatology"
+  ],
+  "experience": 10,
+  "qualification": "MBBS, MS Ophthalmology",
+  "hospitalName": "Manipal Hospital",
+  "licenseNumber": "LIC10005",
+  "consultationFee": 500,
+  "availableDays": [],
+  "availableTime": {
+    "start": "09:00 AM",
+    "end": "06:00 PM"
+  },
+  "assignedPatients": [],
+  "createdAt": {
+    "$date": "2026-04-09T13:36:27.155Z"
+  },
+  "updatedAt": {
+    "$date": "2026-04-09T13:36:27.155Z"
+  },
+  "doctorId": "DOC-00027",
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "69d7ab5bc58eb8fb24f54b53"
+  },
+  "userId": {
+    "$oid": "69d7ab5bc58eb8fb24f54b4f"
+  },
+  "profilePhoto": {
+    "url": "https://res.cloudinary.com/dcfy1v0ab/image/upload/v1772214254/Rectangle_20_2_asahdp.png"
+  },
+  "biography": "Heart specialist with expertise in cardiac surgery.",
+  "age": 48,
+  "gender": "Male",
+  "dateOfBirth": {
+    "$date": "1977-03-19T00:00:00.000Z"
+  },
+  "city": "Chennai",
+  "state": "Tamil Nadu",
+  "specialization": [
+    "Cardiovascular",
+    "General Medicine"
+  ],
+  "experience": 20,
+  "qualification": "MBBS, DM Cardiology",
+  "hospitalName": "MIOT Hospital",
+  "licenseNumber": "LIC10006",
+  "consultationFee": 1200,
+  "availableDays": [],
+  "availableTime": {
+    "start": "09:00 AM",
+    "end": "06:00 PM"
+  },
+  "assignedPatients": [],
+  "createdAt": {
+    "$date": "2026-04-09T13:36:27.223Z"
+  },
+  "updatedAt": {
+    "$date": "2026-04-09T13:36:27.223Z"
+  },
+  "doctorId": "DOC-00028",
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "69d7ab5bc58eb8fb24f54b5a"
+  },
+  "userId": {
+    "$oid": "69d7ab5bc58eb8fb24f54b56"
+  },
+  "profilePhoto": {
+    "url": "https://res.cloudinary.com/dcfy1v0ab/image/upload/v1772214254/Rectangle_20_i1gcfr.png"
+  },
+  "biography": "Lung specialist treating respiratory diseases.",
+  "age": 40,
+  "gender": "Female",
+  "dateOfBirth": {
+    "$date": "1985-06-25T00:00:00.000Z"
+  },
+  "city": "Hyderabad",
+  "state": "Telangana",
+  "specialization": [
+    "Pulmonology",
+    "Allergy"
+  ],
+  "experience": 14,
+  "qualification": "MBBS, MD Pulmonology",
+  "hospitalName": "Care Hospital",
+  "licenseNumber": "LIC10007",
+  "consultationFee": 650,
+  "availableDays": [],
+  "availableTime": {
+    "start": "09:00 AM",
+    "end": "06:00 PM"
+  },
+  "assignedPatients": [],
+  "createdAt": {
+    "$date": "2026-04-09T13:36:27.289Z"
+  },
+  "updatedAt": {
+    "$date": "2026-04-09T13:36:27.289Z"
+  },
+  "doctorId": "DOC-00029",
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "69d7ab5bc58eb8fb24f54b61"
+  },
+  "userId": {
+    "$oid": "69d7ab5bc58eb8fb24f54b5d"
+  },
+  "profilePhoto": {
+    "url": "https://res.cloudinary.com/dcfy1v0ab/image/upload/v1772214254/Rectangle_20_1_iqcqu9.png"
+  },
+  "biography": "Digestive system specialist.",
+  "age": 44,
+  "gender": "Male",
+  "dateOfBirth": {
+    "$date": "1981-08-30T00:00:00.000Z"
+  },
+  "city": "Kolkata",
+  "state": "West Bengal",
+  "specialization": [
+    "Gastroenterology",
+    "General Medicine"
+  ],
+  "experience": 17,
+  "qualification": "MBBS, DM Gastro",
+  "hospitalName": "AMRI Hospital",
+  "licenseNumber": "LIC10008",
+  "consultationFee": 750,
+  "availableDays": [],
+  "availableTime": {
+    "start": "09:00 AM",
+    "end": "06:00 PM"
+  },
+  "assignedPatients": [],
+  "createdAt": {
+    "$date": "2026-04-09T13:36:27.354Z"
+  },
+  "updatedAt": {
+    "$date": "2026-04-09T13:36:27.354Z"
+  },
+  "doctorId": "DOC-00030",
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "69d7ab5bc58eb8fb24f54b68"
+  },
+  "userId": {
+    "$oid": "69d7ab5bc58eb8fb24f54b64"
+  },
+  "profilePhoto": {
+    "url": "https://res.cloudinary.com/dcfy1v0ab/image/upload/v1772214254/Rectangle_20_2_asahdp.png"
+  },
+  "biography": "Urologist specializing in urinary tract treatments.",
+  "age": 39,
+  "gender": "Male",
+  "dateOfBirth": {
+    "$date": "1986-11-05T00:00:00.000Z"
+  },
+  "city": "Jaipur",
+  "state": "Rajasthan",
+  "specialization": [
+    "Urology",
+    "Nephrology"
+  ],
+  "experience": 13,
+  "qualification": "MBBS, MS Urology",
+  "hospitalName": "SMS Hospital",
+  "licenseNumber": "LIC10009",
+  "consultationFee": 700,
+  "availableDays": [],
+  "availableTime": {
+    "start": "09:00 AM",
+    "end": "06:00 PM"
+  },
+  "assignedPatients": [],
+  "createdAt": {
+    "$date": "2026-04-09T13:36:27.423Z"
+  },
+  "updatedAt": {
+    "$date": "2026-04-09T13:36:27.423Z"
+  },
+  "doctorId": "DOC-00031",
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "69d7ab5bc58eb8fb24f54b6f"
+  },
+  "userId": {
+    "$oid": "69d7ab5bc58eb8fb24f54b6b"
+  },
+  "profilePhoto": {
+    "url": "https://res.cloudinary.com/dcfy1v0ab/image/upload/v1772214254/Rectangle_20_i1gcfr.png"
+  },
+  "biography": "Gynecologist focusing on women's health.",
+  "age": 41,
+  "gender": "Female",
+  "dateOfBirth": {
+    "$date": "1984-04-18T00:00:00.000Z"
+  },
+  "city": "Surat",
+  "state": "Gujarat",
+  "specialization": [
+    "Gynaecology",
+    "Dermatology"
+  ],
+  "experience": 16,
+  "qualification": "MBBS, MD Gynecology",
+  "hospitalName": "Sunshine Hospital",
+  "licenseNumber": "LIC10010",
+  "consultationFee": 600,
+  "availableDays": [],
+  "availableTime": {
+    "start": "09:00 AM",
+    "end": "06:00 PM"
+  },
+  "assignedPatients": [],
+  "createdAt": {
+    "$date": "2026-04-09T13:36:27.490Z"
+  },
+  "updatedAt": {
+    "$date": "2026-04-09T13:36:27.490Z"
+  },
+  "doctorId": "DOC-00032",
+  "__v": 0
+}]

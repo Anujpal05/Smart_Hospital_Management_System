@@ -27,6 +27,18 @@ export const registerUser = async (req, res) => {
       return res.status(400).json({ message: "Passwords do not match!" });
     }
 
+    if (!name || !email || !password) {
+      return res.status(400).json({ message: "All fields are required" });
+    }
+
+    if(name.length < 3) {
+      return res.status(400).json({ message: "Name must be at least 3 characters long" });
+    }
+
+    if(password.length < 6) {
+      return res.status(400).json({ message: "Password must be at least 6 characters long" });
+    }
+
     const existing = await User.findOne({ email });
     if (existing)
       return res.status(400).json({ message: "User already exists" });
@@ -39,9 +51,20 @@ export const registerUser = async (req, res) => {
       password: hashedPassword,
     });
 
-    res.status(201).json({ message: "User registered successfully!" });
+    const token = await generateJWToken({ id: user._id, role: user.role });
+    console.log("Registered user:", user);
+    console.log("token :", token);
+
+    return res
+      .status(201)
+      .json({
+        message: "User registered successfully",
+        success: true,
+        user,
+        token,
+      });
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    return res.status(500).json({ error: error.message, success: false });
   }
 };
 
@@ -51,18 +74,22 @@ export const loginUser = async (req, res) => {
     const { email, password } = req.body;
 
     const user = await User.findOne({ email });
-    if (!user) return res.status(404).json({ message: "User not found" });
+    if (!user)
+      return res
+        .status(404)
+        .json({ message: "User not found", success: false });
 
     const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch)
       return res.status(400).json({ message: "Invalid credentials" });
-
     const token = await generateJWToken({ id: user._id, role: user.role });
-    res.json({
-      message: "Login successfully!",
-      data: { token, userId: user._id },
+    return res.json({
+      message: "Login successful!",
+      token,
+      user,
+      success: true,
     });
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    return res.status(500).json({ message: error.message, success: false });
   }
 };

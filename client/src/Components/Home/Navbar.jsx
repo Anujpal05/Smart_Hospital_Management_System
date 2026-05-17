@@ -1,4 +1,4 @@
-import React, { use, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { BiPhoneCall } from "react-icons/bi";
 import { MdOutlineWatchLater } from "react-icons/md";
 import { IoLocationSharp } from "react-icons/io5";
@@ -9,19 +9,30 @@ import { Link, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { logout } from "../../store/authSlice";
 import { CiLogout } from "react-icons/ci";
-
-
+import Modal from "../DashBoard/Common/Modal";
+// import AuthPage from "../Auth/AuthPage";
 
 const Navbar = () => {
   const [open, setOPen] = useState(false);
   const navigate = useNavigate();
+  const [authModal, setAuthModal] = useState(false);
   const isLogin = useSelector((state) => state.auth.isLogin);
   const dispatch = useDispatch();
+  const [url ,setUrl] = useState("/")
 
   const handleLogout = () => {
     dispatch(logout());
     navigate("/");
   };
+
+  useEffect(() => {
+    if(isLogin){
+      const storedUrl = localStorage.getItem("url");
+    if (storedUrl) {
+      setUrl(storedUrl);
+    }
+    }
+  }, [isLogin]);
 
   return (
     <>
@@ -58,24 +69,28 @@ const Navbar = () => {
                 </div>
               </div>
             </div>
-            {!isLogin &&<div className=" absolute right-10">
-              <button
-                onClick={() => navigate("/login")}
-                className="flex items-center gap-2 bg-blue-900 border border-blue-300 text-white font-semibold px-4 py-2 rounded-full cursor-pointer transition duration-300"
-              >
-                <FaSignInAlt className="text-sm" />
-                <div>Login</div>
-              </button>
-            </div>}
-            {isLogin && <div className=" absolute right-10">
-              <button
-                onClick={handleLogout}
-                className="flex items-center gap-2 bg-blue-900 border border-blue-300 text-white font-semibold px-4 py-2 rounded-full cursor-pointer transition duration-300"
-              >
-                <CiLogout className="text-sm" />
-                <div>LogOut</div>
-              </button>
-            </div>}
+            {!isLogin && (
+              <div className=" absolute right-10">
+                <button
+                  onClick={() => navigate("/login")}
+                  className="flex items-center gap-2 bg-blue-900 border border-blue-300 text-white font-semibold px-4 py-2 rounded-full cursor-pointer transition duration-300"
+                >
+                  <FaSignInAlt className="text-sm" />
+                  <div>Login</div>
+                </button>
+              </div>
+            )}
+            {isLogin && (
+              <div className=" absolute right-10">
+                <button
+                  onClick={handleLogout}
+                  className="flex items-center gap-2 bg-blue-900 border border-blue-300 text-white font-semibold px-4 py-2 rounded-full cursor-pointer transition duration-300"
+                >
+                  <CiLogout className="text-sm" />
+                  <div>LogOut</div>
+                </button>
+              </div>
+            )}
           </div>
 
           <div className=" flex  justify-between items-center font-semibold px-[200px] py-4 text-gray-200 bg-blue-900">
@@ -105,11 +120,11 @@ const Navbar = () => {
               <div className=" cursor-pointer">
                 <FaSearch className=" text-gray-200 text-lg" />
               </div>
-              <div>
+              {isLogin && <div>
                 <button className=" bg-blue-300 text-blue-900 font-semibold px-4 py-2 rounded-full cursor-pointer outline-none">
-                  <Link to="/appointment">Appointment</Link>
+                  <Link to={`${url}`}>Dashboard</Link>
                 </button>
-              </div>
+              </div>}
             </div>
           </div>
         </div>
