@@ -295,25 +295,6 @@ This repository is a development/academic project and should be reviewed before 
 
 ---
 
-## 🧪 Testing
-
-The supplied backend `package.json` does not currently define an automated test suite. Add unit, API integration, authorization, and end-to-end tests before production use.
-
-Frontend lint command:
-
-```bash
-cd client
-npm run lint
-```
-
-Frontend production build:
-
-```bash
-npm run build
-```
-
----
-
 ## 🚀 Deployment
 
 The application has two separately runnable parts, so deploy the frontend and backend and configure their environment variables independently.
